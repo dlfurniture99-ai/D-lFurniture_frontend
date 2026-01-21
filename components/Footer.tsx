@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaHeart } from 'react-icons/fa';
 
@@ -9,7 +7,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* About */}
-          <div>
+          <div suppressHydrationWarning>
             <h5 className="text-white font-bold mb-4">About D&L Furnitech</h5>
             <p className="text-sm leading-relaxed mb-4">
               D&L Furnitech brings you premium, solid wood furniture that
@@ -150,14 +148,7 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          <div className="flex justify-center">
-            <Link
-              href="/admin/dashboard"
-              className="px-4 py-2 bg-yellow-600 text-black text-sm font-semibold rounded hover:bg-yellow-700 transition"
-            >
-              Admin Dashboard
-            </Link>
-          </div>
+          
         </div>
       </div>
     </footer>

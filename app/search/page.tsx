@@ -1,23 +1,48 @@
-import { Suspense } from 'react';
-import { products } from '@/lib/mockData';
+'use client';
+
+import { Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
+import { getAllFurniture, Furniture } from '@/lib/api';
 
-interface SearchPageProps {
-  searchParams: Promise<{ q?: string }>;
-}
+export default function SearchPage() {
+  const searchParams = useSearchParams();
+  const q = searchParams.get('q') || '';
+  const [filteredProducts, setFilteredProducts] = useState<Furniture[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const { q } = await searchParams;
-  const query = q?.toLowerCase() || '';
+  useEffect(() => {
+    const searchFurniture = async () => {
+      try {
+        setLoading(true);
+        if (q.trim()) {
+          // Fetch furniture with search parameter
+          const response = await getAllFurniture(1, 100, undefined, q);
+          if (response.success && response.data?.furniture) {
+            setFilteredProducts(response.data.furniture);
+          } else {
+            setFilteredProducts([]);
+          }
+        } else {
+          // Fetch all furniture if no search query
+          const response = await getAllFurniture(1, 100);
+          if (response.success && response.data?.furniture) {
+            setFilteredProducts(response.data.furniture);
+          } else {
+            setFilteredProducts([]);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to search furniture:', error);
+        setFilteredProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const filteredProducts = query
-    ? products.filter(
-        (product) =>
-          product.name.toLowerCase().includes(query) ||
-          product.name.toLowerCase().includes(query)
-      )
-    : products;
+    searchFurniture();
+  }, [q]);
 
   return (
     <main className="min-h-screen bg-gray-50 pt-20">
@@ -34,15 +59,23 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         {/* Search Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {query ? `Search Results for "${q}"` : 'All Products'}
+            {q ? `Search Results for "${q}"` : 'All Products'}
           </h1>
           <p className="text-gray-600">
-            {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+            {loading ? 'Loading...' : `${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''} found`}
           </p>
         </div>
 
-        {/* No Results */}
-        {filteredProducts.length === 0 ? (
+        {/* Loading State */}
+        {loading ? (
+          <div className="bg-white rounded-lg p-12 text-center">
+            <div className="flex flex-col items-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mb-4"></div>
+              <p className="text-gray-600">Searching furniture...</p>
+            </div>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          /* No Results */
           <div className="bg-white rounded-lg p-12 text-center">
             <svg
               className="w-16 h-16 mx-auto text-gray-400 mb-4"
@@ -73,9 +106,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         ) : (
           /* Product Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {filteredProducts.map((product) => {
+              const productKey = ('id' in product ? product.id : product._id) || Math.random();
+              return <ProductCard key={String(productKey)} product={product} />;
+            })}
           </div>
         )}
       </div>

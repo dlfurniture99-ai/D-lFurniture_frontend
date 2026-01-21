@@ -7,18 +7,41 @@ import Header from '@/components/Header';
 import OfferBar from '@/components/OfferBar';
 import Footer from '@/components/Footer';
 import StarRating from '@/components/StarRating';
-import { products } from '@/lib/mockData';
+import { getFurnitureById, Furniture } from '@/lib/api';
 import { cartStore } from '@/lib/cartStore';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const [product, setProduct] = useState<Furniture | null>(null);
+  const [loading, setLoading] = useState(true);
   const [showAddedNotification, setShowAddedNotification] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showImageModal, setShowImageModal] = useState(false);
 
-  const product = products.find((p) => p.id === parseInt(id));
-  const productImages = product?.images || [product?.image || ''];
+  // Fetch product from backend
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await getFurnitureById(id);
+        if (response.success && response.data) {
+          setProduct(response.data);
+        } else {
+          setProduct(null);
+        }
+      } catch (error) {
+        console.error('Failed to fetch product:', error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  const productImages = product?.images || [];
 
   // Handle keyboard navigation in modal
   useEffect(() => {
@@ -42,6 +65,22 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [showImageModal, productImages.length]);
 
+  if (loading) {
+    return (
+      <div className="w-full">
+        <OfferBar />
+        <Header />
+        <main className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading product...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="w-full">
@@ -61,15 +100,29 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }
 
   const handleAddToCart = () => {
+    // Convert Furniture to Product format for cart
+    const cartItem: any = {
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      mrp: product.mrp,
+      category: product.category,
+      image: productImages[0] || '/placeholder.jpg',
+      rating: product.rating,
+      reviews: product.reviews,
+      discount: product.discount || 0,
+      stock: product.stock,
+      description: product.description,
+    };
     for (let i = 0; i < quantity; i++) {
-      cartStore.addItem(product);
+      cartStore.addItem(cartItem);
     }
     setShowAddedNotification(true);
     window.dispatchEvent(new Event('storage'));
     setTimeout(() => setShowAddedNotification(false), 2000);
   };
 
-  const inStock = !product.stock || product.stock > 0;
+  const inStock = product.stock > 0;
 
   return (
     <div className="w-full">
@@ -83,7 +136,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               Home
             </Link>
             <span>/</span>
-            <Link href={`/category/${product.category}`} className="hover:text-yellow-500">
+            <Link href={`/category/${product.category.toLowerCase()}`} className="hover:text-yellow-500">
               {product.category}
             </Link>
             <span>/</span>
@@ -95,12 +148,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <div className="md:col-span-1">
               {productImages.length > 0 && (
                 <div className="flex md:flex-col gap-3">
-                  {productImages.map((image, index) => (
+                  {productImages.filter(img => img).map((image, index) => (
                     <button
                       key={index}
-                      onClick={() => setSelectedImageIndex(index)}
-                      className={`relative w-20 h-20 md:w-full md:h-24 rounded-lg overflow-hidden border-2 transition flex-shrink-0 ${
-                        selectedImageIndex === index
+                      onClick={() => setSelectedImageIndex(productImages.indexOf(image))}
+                      className={`relative w-20 h-20 md:w-full md:h-24 rounded-lg overflow-hidden border-2 transition shrink-0 ${
+                        productImages[selectedImageIndex] === image
                           ? 'border-yellow-500 shadow-lg'
                           : 'border-gray-300 hover:border-yellow-400'
                       }`}
@@ -125,36 +178,30 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   onClick={() => setShowImageModal(true)}
                   className="relative w-full h-96 cursor-zoom-in hover:opacity-90 transition"
                 >
-                  <Image
-                    src={productImages[selectedImageIndex]}
-                    alt={`${product.name} - View ${selectedImageIndex + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 40vw"
-                    className="object-contain"
-                  />
-                  <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded text-sm">
-                    Click to zoom
-                  </div>
+                  {productImages[selectedImageIndex] ? (
+                    <>
+                      <Image
+                        src={productImages[selectedImageIndex]}
+                        alt={`${product.name} - View ${selectedImageIndex + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 40vw"
+                        className="object-contain"
+                      />
+                      <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded text-sm">
+                        Click to zoom
+                      </div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded">
+                      <span className="text-gray-400">No image available</span>
+                    </div>
+                  )}
                 </button>
               </div>
             </div>
 
             {/* Product Details - Right Side */}
             <div className="md:col-span-2 bg-white rounded-lg p-8">
-              {/* Badges */}
-              <div className="flex gap-2 mb-4">
-                {product.badge && (
-                  <span className="bg-red-500 text-white px-3 py-1 rounded-md text-sm font-semibold">
-                    {product.badge}
-                  </span>
-                )}
-                {product.isBestSeller && (
-                  <span className="bg-green-500 text-white px-3 py-1 rounded-md text-sm font-semibold">
-                    Best Seller
-                  </span>
-                )}
-              </div>
-
               {/* Product Name */}
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 {product.name}
@@ -162,10 +209,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
               {/* Rating */}
               <div className="mb-6">
-                <StarRating rating={product.rating} reviews={product.reviews} />
-                <p className="text-sm text-gray-600 mt-2">
-                  {product.reviews} verified customer reviews
-                </p>
+                <StarRating rating={product.rating || 0} reviews={product.reviews || 0} />
+                {product.reviews && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    {product.reviews} verified customer reviews
+                  </p>
+                )}
               </div>
 
               {/* Price Section */}
@@ -177,16 +226,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <span className="text-lg text-gray-500 line-through">
                     ₹{product.mrp.toLocaleString()}
                   </span>
-                </div>
-                <div className="flex gap-4 items-center">
-                  <span className="text-lg font-semibold text-red-500 bg-red-50 px-3 py-1 rounded">
-                    {product.discount}% OFF
+                  <span className="text-xl font-bold text-red-600 bg-red-50 px-3 py-1 rounded">
+                    {product.discount || 0}% OFF
                   </span>
-                  {product.emiText && (
-                    <span className="text-sm text-blue-600 font-medium">
-                      {product.emiText}
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -285,44 +327,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               </div>
             </div>
           )}
-
-          {/* Related Products Section */}
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Products</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {products
-                .filter((p) => p.category === product.category && p.id !== product.id)
-                .slice(0, 4)
-                .map((relatedProduct) => (
-                  <Link key={relatedProduct.id} href={`/product/${relatedProduct.id}`}>
-                    <div className="bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition cursor-pointer">
-                      <div className="relative w-full h-48 bg-gray-100">
-                        <Image
-                          src={relatedProduct.image}
-                          alt={relatedProduct.name}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 25vw"
-                          className="object-contain"
-                        />
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                          {relatedProduct.name}
-                        </h3>
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg font-bold text-gray-900">
-                            ₹{relatedProduct.price.toLocaleString()}
-                          </span>
-                          <span className="text-sm text-red-500 font-semibold">
-                            {relatedProduct.discount}% OFF
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-            </div>
-          </div>
         </div>
 
         {/* Image Zoom Modal */}

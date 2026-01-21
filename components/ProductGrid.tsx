@@ -2,10 +2,11 @@
 
 import { useState, useMemo } from 'react';
 import { Product } from '@/lib/mockData';
+import { Furniture } from '@/lib/api';
 import ProductCard from './ProductCard';
 
 interface ProductGridProps {
-  products: Product[];
+  products: (Product | Furniture)[];
 }
 
 export default function ProductGrid({ products }: ProductGridProps) {
@@ -20,9 +21,17 @@ export default function ProductGrid({ products }: ProductGridProps) {
       case 'price-high-low':
         return sorted.sort((a, b) => b.price - a.price);
       case 'newest':
-        return sorted.sort((a, b) => b.id - a.id);
+        return sorted.sort((a, b) => {
+          const aDate = 'createdAt' in a ? new Date(a.createdAt || 0).getTime() : 0;
+          const bDate = 'createdAt' in b ? new Date(b.createdAt || 0).getTime() : 0;
+          return bDate - aDate;
+        });
       case 'best-sellers':
-        return sorted.sort((a, b) => (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0));
+        return sorted.sort((a, b) => {
+          const aIsBest = 'isBestSeller' in a ? (a.isBestSeller ? 1 : 0) : 0;
+          const bIsBest = 'isBestSeller' in b ? (b.isBestSeller ? 1 : 0) : 0;
+          return bIsBest - aIsBest;
+        });
       default:
         return sorted;
     }
@@ -50,9 +59,10 @@ export default function ProductGrid({ products }: ProductGridProps) {
 
       {/* Product Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        {sortedProducts.map((product) => {
+          const productKey = 'id' in product ? product.id : product._id;
+          return <ProductCard key={productKey} product={product} />;
+        })}
       </div>
     </div>
   );

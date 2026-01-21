@@ -6,47 +6,81 @@ import Image from 'next/image';
 import Header from '@/components/Header';
 import OfferBar from '@/components/OfferBar';
 import Footer from '@/components/Footer';
-import { cartStore, CartItem } from '@/lib/cartStore';
+import { useAuth } from '@/lib/useAuth';
+import { useCart } from '@/lib/useCart';
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [total, setTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isAuthenticated, user } = useAuth();
+  const { cart, isLoading, removeFromCart, updateQuantity, clearCart, getTotal, error } = useCart();
+  const [isRemoving, setIsRemoving] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState<string | null>(null);
+  const [isClearing, setIsClearing] = useState(false);
 
-  useEffect(() => {
-    // Load cart data from localStorage on mount
-    const items = cartStore.getCart();
-    setCartItems(items);
-    setTotal(cartStore.getTotal());
-    setIsLoading(false);
+  // Redirect admin users away from cart page
+  if (isAuthenticated && user?.role === 'admin') {
+    return (
+      <div className="w-full">
+        <OfferBar />
+        <Header />
+        <main className="min-h-screen bg-gray-50 pt-20">
+          <div className="max-w-7xl mx-auto px-4 py-12">
+            <div className="bg-white rounded-lg p-8 text-center">
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">
+                Admin Access Restricted
+              </h1>
+              <p className="text-gray-600 mb-8">
+                Admins cannot access the shopping cart. Please go to the admin panel.
+              </p>
+              <Link href="/admin/dashboard">
+                <button className="bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 transition">
+                  Go to Admin Dashboard
+                </button>
+              </Link>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
-    // Update when storage changes
-    const handleStorageChange = () => {
-      const updatedItems = cartStore.getCart();
-      setCartItems(updatedItems);
-      setTotal(cartStore.getTotal());
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  const handleRemoveItem = (productId: number) => {
-    cartStore.removeItem(productId);
-    const items = cartStore.getCart();
-    setCartItems(items);
-    setTotal(cartStore.getTotal());
+  const handleRemoveItem = async (productId: string) => {
+    try {
+      setIsRemoving(productId);
+      await removeFromCart(productId);
+    } catch (err) {
+      console.error('Error removing item:', err);
+    } finally {
+      setIsRemoving(null);
+    }
   };
 
-  const handleUpdateQuantity = (productId: number, quantity: number) => {
+  const handleUpdateQuantity = async (productId: string, quantity: number) => {
     if (quantity <= 0) {
       handleRemoveItem(productId);
       return;
     }
-    cartStore.updateQuantity(productId, quantity);
-    const items = cartStore.getCart();
-    setCartItems(items);
-    setTotal(cartStore.getTotal());
+    try {
+      setIsUpdating(productId);
+      await updateQuantity(productId, quantity);
+    } catch (err) {
+      console.error('Error updating quantity:', err);
+    } finally {
+      setIsUpdating(null);
+    }
+  };
+
+  const handleClearCart = async () => {
+    if (window.confirm('Are you sure you want to clear your cart?')) {
+      try {
+        setIsClearing(true);
+        await clearCart();
+      } catch (err) {
+        console.error('Error clearing cart:', err);
+      } finally {
+        setIsClearing(false);
+      }
+    }
   };
 
   if (isLoading) {
@@ -63,13 +97,13 @@ export default function CartPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <OfferBar />
       <Header />
       <main className="min-h-screen bg-gray-50 pt-20">
         <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <div className="mb-6 flex items-center gap-2 text-sm text-gray-600">
+        <div className="mb-6 flex items-center pt-10 gap-2 text-sm text-gray-600">
           <Link href="/" className="hover:text-yellow-500">
             Home
           </Link>
@@ -77,7 +111,7 @@ export default function CartPage() {
           <span>Shopping Cart</span>
         </div>
 
-        {cartItems.length === 0 ? (
+        {cart.length === 0 ? (
           // Empty Cart
           <div className="bg-white rounded-lg p-12 text-center">
             <svg
@@ -111,24 +145,43 @@ export default function CartPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2">
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">
-                Shopping Cart ({cartItems.length} items)
-              </h1>
+              <div className="flex items-center justify-between mb-6">
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Shopping Cart ({cart.length} items)
+                </h1>
+                <button
+                  onClick={handleClearCart}
+                  disabled={isClearing}
+                  className="text-red-600 hover:text-red-800 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-red-50 transition disabled:opacity-50"
+                >
+                  {isClearing ? 'Clearing...' : 'Clear Cart'}
+                </button>
+              </div>
+
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+                  {error}
+                </div>
+              )}
 
               <div className="bg-white rounded-lg overflow-hidden">
-                {cartItems.map((item) => (
+                {cart.map((item) => (
                   <div
                     key={item.id}
                     className="border-b border-gray-200 p-6 flex gap-6 hover:bg-gray-50 transition"
                   >
                     {/* Product Image */}
-                    <div className="relative w-24 h-24 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                      />
+                    <div className="relative w-24 h-24 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                      {item.image ? (
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <span className="text-gray-400 text-xs text-center">No image</span>
+                      )}
                     </div>
 
                     {/* Product Details */}
@@ -144,10 +197,11 @@ export default function CartPage() {
                           ₹{item.price.toLocaleString()}
                         </div>
                         <button
-                          onClick={() => handleRemoveItem(item.id)}
-                          className="text-red-500 text-sm hover:text-red-700 font-semibold"
+                          onClick={() => handleRemoveItem(String(item.id))}
+                          disabled={isRemoving === String(item.id)}
+                          className="text-red-500 text-sm hover:text-red-700 font-semibold disabled:opacity-50"
                         >
-                          Remove
+                          {isRemoving === String(item.id) ? 'Removing...' : 'Remove'}
                         </button>
                       </div>
                     </div>
@@ -157,9 +211,10 @@ export default function CartPage() {
                       <div className="flex items-center border border-gray-300 rounded-lg">
                         <button
                           onClick={() =>
-                            handleUpdateQuantity(item.id, item.quantity - 1)
+                            handleUpdateQuantity(String(item.id), item.quantity - 1)
                           }
-                          className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                          disabled={isUpdating === String(item.id)}
+                          className="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
                         >
                           −
                         </button>
@@ -168,9 +223,10 @@ export default function CartPage() {
                         </span>
                         <button
                           onClick={() =>
-                            handleUpdateQuantity(item.id, item.quantity + 1)
+                            handleUpdateQuantity(String(item.id), item.quantity + 1)
                           }
-                          className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                          disabled={isUpdating === String(item.id)}
+                          className="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
                         >
                           +
                         </button>
@@ -202,7 +258,7 @@ export default function CartPage() {
                 <div className="space-y-4 mb-6 pb-6 border-b border-gray-200">
                   <div className="flex justify-between text-gray-700">
                     <span>Subtotal</span>
-                    <span className="font-semibold">₹{total.toLocaleString()}</span>
+                    <span className="font-semibold">₹{getTotal().toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-gray-700">
                     <span>Shipping</span>
@@ -217,16 +273,25 @@ export default function CartPage() {
                 <div className="flex justify-between mb-6">
                   <span className="font-bold text-lg text-gray-900">Total</span>
                   <span className="font-bold text-2xl text-yellow-500">
-                    ₹{total.toLocaleString()}
+                    ₹{getTotal().toLocaleString()}
                   </span>
                 </div>
 
-                <Link
-                  href="/checkout"
-                  className="w-full bg-yellow-600 text-white py-3 rounded-lg font-bold hover:bg-yellow-700 transition mb-3 inline-block text-center"
-                >
-                  Proceed to Checkout
-                </Link>
+                {isAuthenticated ? (
+                  <Link
+                    href="/checkout"
+                    className="w-full bg-yellow-600 text-white py-3 rounded-lg font-bold hover:bg-yellow-700 transition mb-3 inline-block text-center"
+                  >
+                    Proceed to Checkout
+                  </Link>
+                ) : (
+                  <Link
+                    href="/auth/login"
+                    className="w-full bg-yellow-600 text-white py-3 rounded-lg font-bold hover:bg-yellow-700 transition mb-3 inline-block text-center"
+                  >
+                    Login to Checkout
+                  </Link>
+                )}
 
                 <div className="text-center">
                   <p className="text-xs text-gray-600 mb-3">

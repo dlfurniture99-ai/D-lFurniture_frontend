@@ -1,23 +1,28 @@
 'use client';
 
-import { useState, useMemo, use } from 'react';
+import { useState, useEffect } from 'react';
+import { use } from 'react';
 import Header from '@/components/Header';
 import OfferBar from '@/components/OfferBar';
 import FilterSidebar from '@/components/FilterSidebar';
 import ProductGrid from '@/components/ProductGrid';
 import Footer from '@/components/Footer';
 import TrustBadges from '@/components/TrustBadges';
-import { products } from '@/lib/mockData';
+import { getAllFurniture, Furniture } from '@/lib/api';
 
 const categoryNames: Record<string, string> = {
   sofas: 'Sofas',
   beds: 'Beds',
-  'dining-sets': 'Dining Sets',
+  dining: 'Dining',
   storage: 'Storage',
+  office: 'Office',
+  decor: 'Decor',
 };
 
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
+  const [categoryProducts, setCategoryProducts] = useState<Furniture[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<{
     priceRange: number;
     materials: string[];
@@ -34,19 +39,35 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     deliveryTime: [],
   });
 
-  const categoryProducts = useMemo(() => {
-    return products.filter((product) => product.category === slug);
-  }, [slug]);
+  // Get category name from slug
+  const getCategoryName = (slug: string) => {
+    return categoryNames[slug] || slug.charAt(0).toUpperCase() + slug.slice(1);
+  };
+
+  const categoryName = getCategoryName(slug);
+
+  // Fetch furniture for this category
+  useEffect(() => {
+    const fetchCategoryProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await getAllFurniture(1, 100, categoryName);
+        if (response.success && response.data?.furniture) {
+          setCategoryProducts(response.data.furniture);
+        }
+      } catch (error) {
+        console.error('Failed to fetch category products:', error);
+        setCategoryProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategoryProducts();
+  }, [categoryName]);
 
   const filteredProducts = categoryProducts.filter((product) => {
     if (product.price > filters.priceRange) return false;
-    if (filters.materials.length > 0) {
-      const hasMatch = filters.materials.some(
-        (material) =>
-          product.name.toLowerCase().includes(material.toLowerCase())
-      );
-      if (!hasMatch) return false;
-    }
     if (filters.availability.length > 0) {
       const inStock = product.stock !== undefined ? product.stock > 0 : true;
       if (filters.availability.includes('instock') && !inStock) return false;
@@ -54,8 +75,6 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     }
     return true;
   });
-
-  const categoryName = categoryNames[slug] || 'Products';
 
   return (
     <div className="w-full bg-gray-50">
@@ -72,7 +91,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             Browse our collection of premium {categoryName.toLowerCase()}
           </p>
           <p className="text-sm text-gray-500 mt-4">
-            Showing {filteredProducts.length} products
+            {loading ? 'Loading...' : `Showing ${filteredProducts.length} products`}
           </p>
         </div>
       </section>
@@ -84,7 +103,14 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           <FilterSidebar filters={filters} setFilters={setFilters} />
 
           {/* Product Grid */}
-          {filteredProducts.length > 0 ? (
+          {loading ? (
+            <div className="flex-1 flex items-center justify-center min-h-96">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading products...</p>
+              </div>
+            </div>
+          ) : filteredProducts.length > 0 ? (
             <ProductGrid products={filteredProducts} />
           ) : (
             <div className="flex-1 flex items-center justify-center min-h-96">

@@ -4,16 +4,21 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import MegaMenu from './MegaMenu';
-import { cartStore } from '@/lib/cartStore';
-import { wishlistStore } from '@/lib/wishlistStore';
+import { useAuth } from '@/lib/useAuth';
+import { useCart } from '@/lib/useCart';
+import { useWishlist } from '@/lib/useWishlist';
+import { IoLogOut, IoPerson } from 'react-icons/io5';
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [cartCount, setCartCount] = useState(0);
-  const [wishlistCount, setWishlistCount] = useState(0);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const { user, isAuthenticated, logout } = useAuth();
+  const { getCount } = useCart();
+  const { wishlist } = useWishlist();
 
   // Close menu when clicking outside and update counts
   useEffect(() => {
@@ -21,21 +26,14 @@ export default function Header() {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setActiveMenu(null);
       }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false);
+      }
     };
 
-    // Update cart and wishlist counts
-    const updateCounts = () => {
-      setCartCount(cartStore.getCount());
-      setWishlistCount(wishlistStore.getCount());
-    };
-    updateCounts();
-
-    // Listen for storage changes (in case cart/wishlist is updated from another tab)
-    window.addEventListener('storage', updateCounts);
     document.addEventListener('mousedown', handleClickOutside);
     
     return () => {
-      window.removeEventListener('storage', updateCounts);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
@@ -231,7 +229,7 @@ export default function Header() {
         <div className="flex items-center justify-between gap-8">
           {/* Logo & Branding */}
           <Link href="/" onClick={closeMegaMenu} className="flex items-center gap-3 hover:opacity-80 transition">
-            <div className="relative w-24 h-24 flex-shrink-0">
+            <div className="relative w-24 h-24 shrink-0">
               <Image
                   src="/logo.jpg"
                   alt="D&L Furnitech Logo"
@@ -241,7 +239,7 @@ export default function Header() {
                 />
              </div>
              <div className="hidden sm:block">
-               <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-400 bg-clip-text text-transparent leading-none">
+               <h1 className="text-2xl md:text-3xl font-bold bg-linear-to-r from-yellow-600 via-yellow-500 to-yellow-400 bg-clip-text text-transparent leading-none">
                  D&L
                </h1>
                <p className="text-xs md:text-sm font-semibold text-yellow-500 mt-1">
@@ -303,7 +301,7 @@ export default function Header() {
                               {subCat.items.map((item, itemIdx) => (
                                 <li key={itemIdx}>
                                   <Link
-                                    href={`/product/${item.toLowerCase().replace(/\s+/g, '-')}`}
+                                    href={item.startsWith('All ') ? `/category/${cat.slug}` : `/search?q=${encodeURIComponent(item)}`}
                                     onClick={closeMegaMenu}
                                     className="text-gray-300 text-sm hover:text-yellow-600 hover:font-semibold transition"
                                   >
@@ -321,24 +319,6 @@ export default function Header() {
               </div>
             ))}
           </nav>
-
-          {/* About Us & Contact Us Buttons */}
-          <div className="hidden lg:flex items-center gap-3 ml-auto">
-            <Link
-              href="/about"
-              onClick={closeMegaMenu}
-              className="px-6 py-2.5 bg-gradient-to-b from-yellow-500 to-yellow-700 text-black font-bold rounded-lg hover:from-yellow-400 hover:to-yellow-600 transition-all duration-300 whitespace-nowrap shadow-lg hover:shadow-xl hover:scale-105"
-            >
-              About Us
-            </Link>
-            <Link
-              href="/contact"
-              onClick={closeMegaMenu}
-              className="px-6 py-2.5 bg-gradient-to-b from-yellow-500 to-yellow-700 text-black font-bold rounded-lg hover:from-yellow-400 hover:to-yellow-600 transition-all duration-300 whitespace-nowrap shadow-lg hover:shadow-xl hover:scale-105"
-            >
-              Contact Us
-            </Link>
-          </div>
 
           {/* Mobile Menu Toggle */}
           <button
@@ -379,75 +359,130 @@ export default function Header() {
               </button>
             </form>
 
-            {/* Wishlist Icon */}
-            <Link
-              href="/wishlist"
-              className="relative p-2 hover:bg-neutral-800 rounded-full transition"
-              title="Wishlist"
-            >
-              <svg
-                className="w-6 h-6 text-red-500"
-                fill="currentColor"
-                viewBox="0 0 24 24"
+            {/* Wishlist Icon - Show for all users except admin */}
+            {!user || user.role !== 'admin' ? (
+              <Link
+                href="/wishlist"
+                className="relative p-2 hover:bg-neutral-800 rounded-full transition"
+                title="Wishlist"
               >
-                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-              {wishlistCount > 0 && (
-                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                  {wishlistCount}
-                </span>
-              )}
-            </Link>
+                <svg
+                  className="w-6 h-6 text-red-500"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                {wishlist.length > 0 && (
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    {wishlist.length}
+                  </span>
+                )}
+              </Link>
+            ) : null}
 
-            {/* Cart Icon */}
-            <Link
-              href="/cart"
-              className="relative p-2 hover:bg-neutral-800 rounded-full transition"
-              title="Cart"
-            >
-              <svg
-                className="w-6 h-6 text-gray-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            {/* Cart Icon - Show for all users except admin */}
+            {!user || user.role !== 'admin' ? (
+              <Link
+                href="/cart"
+                className="relative p-2 hover:bg-neutral-800 rounded-full transition"
+                title="Cart"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-              {cartCount > 0 && (
-                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartCount}
-                </span>
+                <svg
+                  className="w-6 h-6 text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+                {getCount() > 0 && (
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {getCount()}
+                  </span>
+                )}
+              </Link>
+            ) : null}
+
+            {/* User Menu */}
+            <div className="relative" ref={userMenuRef}>
+              {isAuthenticated ? (
+                <>
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="p-2 hover:bg-neutral-800 rounded-full transition flex items-center gap-2"
+                    title="Account"
+                  >
+                    <IoPerson className="w-6 h-6 text-yellow-500" />
+                    <span className="hidden sm:inline text-sm text-gray-300 max-w-25 truncate">
+                      {user?.email || 'Account'}
+                    </span>
+                  </button>
+
+                  {/* User Dropdown Menu */}
+                  {userMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl overflow-hidden z-50">
+                      <div className="px-4 py-3 border-b border-neutral-800">
+                        <p className="text-sm text-gray-400">Signed in as</p>
+                        <p className="text-white font-semibold">
+                          {user?.email}
+                        </p>
+                      </div>
+                      <Link
+                        href="/account"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="block px-4 py-2 text-gray-300 hover:bg-neutral-800 hover:text-yellow-500 transition"
+                      >
+                        My Account
+                      </Link>
+                      <Link
+                        href="/orders"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="block px-4 py-2 text-gray-300 hover:bg-neutral-800 hover:text-yellow-500 transition"
+                      >
+                        My Orders
+                      </Link>
+                      <button
+                        onClick={() => {
+                          logout();
+                          setUserMenuOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-gray-300 hover:bg-neutral-800 hover:text-red-500 transition flex items-center gap-2"
+                      >
+                        <IoLogOut size={16} />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/auth/login"
+                    className="px-3 py-2 text-sm text-gray-300 hover:text-yellow-500 transition hidden sm:block"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    className="px-3 py-2 text-sm bg-yellow-500 text-black rounded hover:bg-yellow-600 transition font-semibold"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
               )}
-            </Link>
+            </div>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
         <nav className="md:hidden flex flex-col gap-3 mt-4 p-4 bg-neutral-900 border-t border-neutral-800 text-gray-300 font-medium text-sm max-h-[calc(100vh-120px)] overflow-y-auto">
-          {/* Mobile About Us Link */}
-          <Link
-            href="/about"
-            onClick={closeMegaMenu}
-            className="px-4 py-2 bg-yellow-600 text-neutral-950 font-semibold rounded-lg hover:bg-yellow-700 transition text-center w-full"
-          >
-            About Us
-          </Link>
-
-          {/* Mobile Contact Us Link */}
-          <Link
-            href="/contact"
-            onClick={closeMegaMenu}
-            className="px-4 py-2 bg-yellow-600 text-neutral-950 font-semibold rounded-lg hover:bg-yellow-700 transition text-center w-full"
-          >
-            Contact Us
-          </Link>
-
           {/* Categories */}
           {categories.map((cat) => (
             <div key={cat.slug} className="border-b border-neutral-800 pb-3">
@@ -466,7 +501,7 @@ export default function Header() {
                   <span className="font-semibold">{cat.name}</span>
                 </div>
                 <svg
-                  className={`w-4 h-4 transition-transform flex-shrink-0 ${
+                  className={`w-4 h-4 transition-transform shrink-0 ${
                     activeMenu === cat.slug ? 'rotate-180' : ''
                   }`}
                   fill="none"
@@ -501,7 +536,7 @@ export default function Header() {
                         {subCat.items.map((item, itemIdx) => (
                           <li key={itemIdx}>
                             <Link
-                              href={`/product/${item.toLowerCase().replace(/\s+/g, '-')}`}
+                              href={item.startsWith('All ') ? `/category/${cat.slug}` : `/search?q=${encodeURIComponent(item)}`}
                               onClick={closeMegaMenu}
                               className="text-gray-300 text-xs hover:text-yellow-400 block pl-3 py-1"
                             >

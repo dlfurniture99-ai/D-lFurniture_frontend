@@ -75,7 +75,7 @@ export default function RootLayout({
         </Script>
 
         {/* Organization Schema */}
-        <Script
+        <Script 
           id="org-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
