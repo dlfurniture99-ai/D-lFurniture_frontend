@@ -17,7 +17,11 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const [showAddedNotification, setShowAddedNotification] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const { isAuthenticated } = useAuth();
+  
+  const { user, isAuthenticated: isAuth } = useAuth();
+  // Fix: Treat Admin as Guest for product interactions
+  const isAuthenticated = isAuth && user?.role !== 'admin';
+
   const { addToCart, error } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
 

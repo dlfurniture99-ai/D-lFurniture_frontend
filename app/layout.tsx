@@ -92,6 +92,13 @@ export default function RootLayout({
           }}
         />
 
+        {/* Razorpay Checkout Script */}
+        <Script
+          id="razorpay-checkout"
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="lazyOnload"
+        />
+
         {/* Additional Meta Tags */}
         <meta name="theme-color" content="#D4AF37" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

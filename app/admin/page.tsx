@@ -163,7 +163,7 @@ export default function AdminPage() {
           <div className="mt-12 flex justify-center">
             <button
               onClick={() => {
-                localStorage.removeItem('authToken');
+                localStorage.removeItem('adminToken');
                 window.location.reload();
               }}
               className="px-8 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"

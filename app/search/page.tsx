@@ -6,7 +6,7 @@ import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
 import { getAllFurniture, Furniture } from '@/lib/api';
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const q = searchParams.get('q') || '';
   const [filteredProducts, setFilteredProducts] = useState<Furniture[]>([]);
@@ -114,5 +114,13 @@ export default function SearchPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 }

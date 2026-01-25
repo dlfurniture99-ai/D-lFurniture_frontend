@@ -16,7 +16,13 @@ export default function Header() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user: authUser, isAuthenticated: isAuth, logout } = useAuth();
+
+  // Fix: Treat Admin as Guest on the Customer Panel
+  const isCustomer = isAuth && authUser?.role !== 'admin';
+  const user = isCustomer ? authUser : null;
+  const isAuthenticated = isCustomer;
+
   const { getCount } = useCart();
   const { wishlist } = useWishlist();
 
