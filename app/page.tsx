@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import OfferBar from '@/components/OfferBar';
-import Header from '@/components/Header';
+import HeaderNew from '@/components/HeaderNew';
 import HeroBanner from '@/components/HeroBanner';
 import FilterSidebar from '@/components/FilterSidebar';
 import ProductGrid from '@/components/ProductGrid';
+import ShopByCategory from '@/components/ShopByCategory';
 import TrustBadges from '@/components/TrustBadges';
 import Footer from '@/components/Footer';
 import FeaturedCategories from '@/components/FeaturedCategories';
@@ -94,12 +95,12 @@ export default function Home() {
   });
 
   return (
-    <div className="w-full bg-gray-50">
+    <div className="w-full bg-white">
       {/* Sticky Offer Bar */}
       <OfferBar />
 
       {/* Header with Navigation */}
-      <Header />
+      <HeaderNew />
 
       {/* Hero Banner Section - Add top padding for fixed header */}
       <div className="pt-20">
@@ -125,6 +126,9 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* Shop by Category */}
+      <ShopByCategory />
 
       {/* Featured Categories */}
       <FeaturedCategories />

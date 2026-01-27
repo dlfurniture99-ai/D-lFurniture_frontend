@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Header from '@/components/Header';
-import OfferBar from '@/components/OfferBar';
-import Footer from '@/components/Footer';
+import AdminLayout from '@/components/AdminLayout';
 import { useAuth } from '@/lib/useAuth';
 import { getAllOrders, updateOrderStatus, Order } from '@/lib/api';
 
@@ -66,52 +64,34 @@ export default function AdminOrdersPage() {
   // Check if user is admin
   if (!isAuthenticated || user?.role !== 'admin') {
     return (
-      <div className="w-full">
-        <OfferBar />
-        <Header />
-        <main className="min-h-screen bg-gray-50 pt-20">
-          <div className="max-w-7xl mx-auto px-4 py-12">
-            <div className="bg-white rounded-lg p-8 text-center">
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">
-                Access Denied
-              </h1>
-              <p className="text-gray-600 mb-8">
-                You need to be an admin to access this page.
-              </p>
-              <Link
-                href="/admin"
-                className="inline-block bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition"
-              >
-                Go to Admin Login
-              </Link>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <AdminLayout adminEmail={user?.email || 'Admin'}>
+        <div className="bg-white rounded-lg p-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Access Denied
+          </h1>
+          <p className="text-gray-600 mb-8">
+            You need to be an admin to access this page.
+          </p>
+          <Link
+            href="/admin"
+            className="inline-block bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition"
+          >
+            Go to Admin Login
+          </Link>
+        </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="w-full">
-      <OfferBar />
-      <Header />
-      <main className="min-h-screen bg-gray-50 pt-20 pb-12">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
-              <Link href="/admin/dashboard" className="hover:text-yellow-500">
-                Dashboard
-              </Link>
-              <span>/</span>
-              <span>Orders</span>
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900">All Orders</h1>
-            <p className="text-gray-600 mt-2">
-              Manage and track all customer orders
-            </p>
-          </div>
+    <AdminLayout adminEmail={user?.email || 'Admin'}>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900">All Orders</h1>
+        <p className="text-gray-600 mt-2">
+          Manage and track all customer orders
+        </p>
+      </div>
 
           {/* Status Filter */}
           <div className="bg-white rounded-lg p-6 mb-6 shadow-sm">
@@ -334,9 +314,6 @@ export default function AdminOrdersPage() {
               </button>
             </div>
           )}
-        </div>
-      </main>
-      <Footer />
-    </div>
+    </AdminLayout>
   );
 }

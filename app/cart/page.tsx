@@ -3,25 +3,25 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Header from '@/components/Header';
+import HeaderNew from '@/components/HeaderNew';
 import OfferBar from '@/components/OfferBar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/useAuth';
 import { useCart } from '@/lib/useCart';
 
 export default function CartPage() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading: isAuthLoading } = useAuth();
   const { cart, isLoading, removeFromCart, updateQuantity, clearCart, getTotal, error } = useCart();
   const [isRemoving, setIsRemoving] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [isClearing, setIsClearing] = useState(false);
 
-  // Redirect admin users away from cart page
-  if (isAuthenticated && user?.role === 'admin') {
+  // Redirect admin users away from cart page (only after auth is fully loaded)
+  if (!isAuthLoading && isAuthenticated && user?.role === 'admin') {
     return (
       <div className="w-full">
         <OfferBar />
-        <Header />
+        <HeaderNew />
         <main className="min-h-screen bg-gray-50 pt-20">
           <div className="max-w-7xl mx-auto px-4 py-12">
             <div className="bg-white rounded-lg p-8 text-center">
@@ -38,6 +38,20 @@ export default function CartPage() {
               </Link>
             </div>
           </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show loading while auth is being checked
+  if (isAuthLoading) {
+    return (
+      <div className="w-full">
+        <OfferBar />
+        <HeaderNew />
+        <main className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
+          <div className="text-gray-500">Loading...</div>
         </main>
         <Footer />
       </div>
@@ -87,7 +101,7 @@ export default function CartPage() {
     return (
       <div className="w-full">
         <OfferBar />
-        <Header />
+        <HeaderNew />
         <main className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
           <div className="text-gray-500">Loading cart...</div>
         </main>
@@ -99,7 +113,7 @@ export default function CartPage() {
   return (
     <div className="w-full ">
       <OfferBar />
-      <Header />
+      <HeaderNew />
       <main className="min-h-screen bg-gray-50 pt-20">
         <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Breadcrumb */}

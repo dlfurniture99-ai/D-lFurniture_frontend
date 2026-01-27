@@ -17,6 +17,7 @@ export default function SignupForm() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -79,11 +80,21 @@ export default function SignupForm() {
         password: formData.password,
       });
 
-      // Handle the response structure: { success, message, data: { token, user } }
-      if (response.success && response.data?.token) {
-        setAuthToken(response.data.token);
-        // Redirect to home immediately
-        router.push('/');
+      // Handle the response structure: { success, message, data: { userToken, user } }
+      if (response.success && response.data?.userToken) {
+        setAuthToken(response.data.userToken);
+        
+        // Store user role
+        const userRole = response.data?.user?.role;
+        if (userRole) {
+          localStorage.setItem('userRole', userRole);
+        }
+        
+        setSuccess('Account created successfully! Redirecting to home...');
+        // Redirect to home after 1 second
+        setTimeout(() => {
+          router.push('/');
+        }, 1000);
       } else {
         setError(response.message || 'Signup failed. Please try again.');
       }
@@ -209,6 +220,13 @@ export default function SignupForm() {
         {error && (
           <div className="p-3 bg-red-900/20 border border-red-700 rounded-lg text-red-300 text-sm">
             {error}
+          </div>
+        )}
+
+        {/* Success Message */}
+        {success && (
+          <div className="p-3 bg-green-900/20 border border-green-700 rounded-lg text-green-300 text-sm">
+            {success}
           </div>
         )}
 

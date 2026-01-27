@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import Header from '@/components/Header';
+import HeaderNew from '@/components/HeaderNew';
 import Footer from '@/components/Footer';
 import { GiToolbox, GiEarthAmerica } from 'react-icons/gi';
 import { FaHeart as FaHeartFA } from 'react-icons/fa';
@@ -10,7 +10,7 @@ import { FaHeart as FaHeartFA } from 'react-icons/fa';
 export default function AboutPage() {
   return (
     <div className="w-full">
-      <Header />
+      <HeaderNew />
 
       {/* Hero Section */}
       <section className="w-full bg-gradient-to-r from-neutral-950 to-neutral-900 py-16 pt-20">

@@ -1,7 +1,10 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
 // API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = 
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:5000/api'
+    : process.env.NEXT_PUBLIC_API_URL || 'https://d-l-furniture-backend.vercel.app/api';
 
 // Create axios instance
 export const apiClient: AxiosInstance = axios.create({
@@ -11,12 +14,16 @@ export const apiClient: AxiosInstance = axios.create({
   },
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token and handle FormData
 apiClient.interceptors.request.use(
   (config) => {
     const token = getAuthToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    // Let browser set Content-Type for FormData (with boundary)
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
     }
     return config;
   },
@@ -88,25 +95,62 @@ export async function signupUser(payload: SignupPayload): Promise<AuthResponse> 
   }
 }
 
-// Store token in localStorage
-export function setAuthToken(token: string): void {
+// Store token in localStorage with role-based keys + sessionStorage for per-tab tracking
+export function setAuthToken(token: string, role?: string): void {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('authToken', token);
+    // Decode token to get role if not provided
+    let userRole = role;
+    if (!userRole && token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        userRole = payload.role;
+      } catch (err) {
+        console.error('Failed to decode token for role:', err);
+      }
+    }
+
+    // Store in role-specific key
+    if (userRole === 'admin') {
+      localStorage.setItem('adminToken', token);
+      localStorage.removeItem('authToken'); // Clear customer token
+      localStorage.setItem('userRole', 'admin');
+      // Set session storage to indicate this tab is in admin mode
+      sessionStorage.setItem('activeMode', 'admin');
+    } else {
+      localStorage.setItem('authToken', token);
+      localStorage.removeItem('adminToken'); // Clear admin token
+      localStorage.setItem('userRole', 'customer');
+      // Set session storage to indicate this tab is in customer mode
+      sessionStorage.setItem('activeMode', 'customer');
+    }
   }
 }
 
-// Get token from localStorage
+// Get token from localStorage - check per-tab mode (sessionStorage)
 export function getAuthToken(): string | null {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('authToken');
+    // Check which mode this tab is in (per-tab tracking)
+    const activeMode = sessionStorage.getItem('activeMode');
+    
+    if (activeMode === 'admin') {
+      return localStorage.getItem('adminToken');
+    } else if (activeMode === 'customer') {
+      return localStorage.getItem('authToken');
+    }
+    
+    // If no activeMode is set, no token for this tab (fresh tab)
+    return null;
   }
   return null;
 }
 
-// Remove token from localStorage
+// Remove token from localStorage - clear both keys
 export function removeAuthToken(): void {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('userRole');
+    sessionStorage.removeItem('activeMode');
   }
 }
 
@@ -222,16 +266,14 @@ export async function getFurnitureById(id: string): Promise<{
 
 // Create new furniture (Admin only)
 export async function createFurniture(
-  payload: CreateFurniturePayload,
-  token?: string
+  payload: CreateFurniturePayload | FormData
 ): Promise<{
   success: boolean;
   message: string;
   data?: Furniture;
 }> {
   try {
-    const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    const response = await apiClient.post('/furniture/create-furniture', payload, config);
+    const response = await apiClient.post('/furniture/create-furniture', payload);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -246,17 +288,14 @@ export async function createFurniture(
 // Update furniture (Admin only)
 export async function updateFurniture(
   id: string,
-  payload: Partial<CreateFurniturePayload>
+  payload: Partial<CreateFurniturePayload> | FormData
 ): Promise<{
   success: boolean;
   message: string;
   data?: Furniture;
 }> {
   try {
-    const response = await apiClient.put('/furniture/update-furniture', {
-      id,
-      ...payload,
-    });
+    const response = await apiClient.put(`/furniture/update-furniture?id=${id}`, payload);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -563,3 +602,106 @@ export const removeFromWishlist = async (productId: string) => {
     throw error;
   }
 };
+
+// ============================================
+// CATEGORY API FUNCTIONS
+// ============================================
+
+export interface Category {
+  _id?: string;
+  id?: string;
+  name: string;
+  slug: string;
+  image?: string;
+  emoji?: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CategoriesResponse {
+  success: boolean;
+  message: string;
+  data?: {
+    categories: Category[];
+    total?: number;
+  };
+}
+
+// Fetch all categories (public endpoint)
+export async function getAllCategories(): Promise<CategoriesResponse> {
+  try {
+    const response = await apiClient.get<CategoriesResponse>('/categories/public-category');
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch categories');
+    }
+    throw error;
+  }
+}
+
+// Create category (Admin only)
+export async function createCategory(data: {
+  name: string;
+  slug: string;
+  image?: string;
+  emoji?: string;
+  description?: string;
+}): Promise<{
+  success: boolean;
+  message: string;
+  data?: Category;
+}> {
+  try {
+    const response = await apiClient.post('/categories/create-category', data);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || 'Failed to create category');
+    }
+    throw error;
+  }
+}
+
+// Update category (Admin only)
+export async function updateCategory(
+  id: string,
+  data: {
+    name?: string;
+    slug?: string;
+    image?: string;
+    emoji?: string;
+    description?: string;
+  }
+): Promise<{
+  success: boolean;
+  message: string;
+  data?: Category;
+}> {
+  try {
+    const response = await apiClient.put(`/categories/edit-category/${id}`, data);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || 'Failed to update category');
+    }
+    throw error;
+  }
+}
+
+// Delete category (Admin only)
+export async function deleteCategory(id: string): Promise<{
+  success: boolean;
+  message: string;
+}> {
+  try {
+    const response = await apiClient.delete(`/categories/delete-category/${id}`);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || 'Failed to delete category');
+    }
+    throw error;
+  }
+}

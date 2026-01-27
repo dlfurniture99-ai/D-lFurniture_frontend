@@ -19,10 +19,13 @@ export interface CartItem {
 }
 
 export function useCart() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, isLoading: isAuthLoading } = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Treat admins as guests (use localStorage, not API)
+  const isCustomer = isAuthenticated && user?.role !== 'admin';
 
   // Helper to get local cart
   const getLocalCart = (): CartItem[] => {
@@ -43,7 +46,7 @@ export function useCart() {
     setIsLoading(true);
     setError(null);
     try {
-      if (isAuthenticated) {
+      if (isCustomer) {
         // Fetch from API
         const response = await api.getCart();
         if (response.success && response.data) {
@@ -76,55 +79,57 @@ export function useCart() {
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [isCustomer]);
 
   // Sync local cart to backend on login
   useEffect(() => {
     const syncCart = async () => {
-      if (isAuthenticated) {
-        const localItems = getLocalCart();
-        if (localItems.length > 0) {
-          setIsLoading(true);
-          try {
-            // Add all local items to backend
-            for (const item of localItems) {
-              await api.addToCart(item.productId, item.quantity);
+      if (!isAuthLoading) {
+        if (isCustomer) {
+          const localItems = getLocalCart();
+          if (localItems.length > 0) {
+            setIsLoading(true);
+            try {
+              // Add all local items to backend
+              for (const item of localItems) {
+                await api.addToCart(item.productId, item.quantity);
+              }
+              // Clear local cart after sync
+              localStorage.removeItem(CART_STORAGE_KEY);
+              // Reload cart from API
+              await loadCart();
+            } catch (err) {
+              console.error('Sync failed', err);
+            } finally {
+              setIsLoading(false);
             }
-            // Clear local cart after sync
-            localStorage.removeItem(CART_STORAGE_KEY);
-            // Reload cart from API
-            await loadCart();
-          } catch (err) {
-            console.error('Sync failed', err);
-          } finally {
-            setIsLoading(false);
+          } else {
+              loadCart();
           }
         } else {
-            loadCart();
+          loadCart();
         }
-      } else {
-        loadCart();
       }
     };
 
     syncCart();
-  }, [isAuthenticated, loadCart]);
+  }, [isCustomer, isAuthLoading, loadCart]);
 
   // Listen for storage events (for guest mode across tabs)
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isCustomer) {
       const handleStorageChange = () => {
         setCart(getLocalCart());
       };
       window.addEventListener('storage', handleStorageChange);
       return () => window.removeEventListener('storage', handleStorageChange);
     }
-  }, [isAuthenticated]);
+  }, [isCustomer]);
 
   const addToCart = async (productOrId: any, quantity: number = 1) => {
     setError(null);
     try {
-      if (isAuthenticated) {
+      if (isCustomer) {
         const productId = typeof productOrId === 'string' ? productOrId : (productOrId._id || productOrId.id);
         await api.addToCart(productId, quantity);
         await loadCart();
@@ -165,7 +170,7 @@ export function useCart() {
 
   const removeFromCart = async (productId: string) => {
     try {
-      if (isAuthenticated) {
+      if (isCustomer) {
         await api.removeFromCart(productId);
         await loadCart();
       } else {
@@ -180,7 +185,7 @@ export function useCart() {
 
   const updateQuantity = async (productId: string, quantity: number) => {
     try {
-      if (isAuthenticated) {
+      if (isCustomer) {
         await api.updateCartItem(productId, quantity);
         await loadCart();
       } else {
@@ -203,7 +208,7 @@ export function useCart() {
 
   const clearCart = async () => {
     try {
-      if (isAuthenticated) {
+      if (isCustomer) {
         await api.clearCart();
         await loadCart();
       } else {

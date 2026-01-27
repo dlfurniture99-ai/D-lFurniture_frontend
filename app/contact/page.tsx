@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import Header from '@/components/Header';
+import HeaderNew from '@/components/HeaderNew';
 import Footer from '@/components/Footer';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaWhatsapp, FaTimes } from 'react-icons/fa';
 
@@ -31,7 +31,7 @@ export default function ContactPage() {
 
   return (
     <div className="w-full">
-      <Header />
+      <HeaderNew />
 
       {/* Hero Section */}
       <section className="w-full bg-gradient-to-r from-neutral-950 to-neutral-900 py-20 pt-32">

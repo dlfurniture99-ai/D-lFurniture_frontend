@@ -44,8 +44,12 @@ export default function AdminLoginForm() {
       const response = await apiClient.post('/auth/admin-login', formData);
       const data = response.data;
 
-      if (data.success && data.data?.token) {
-        setAuthToken(data.data.token);
+      if (data.success && data.data?.adminToken) {
+        const adminRole = data.data?.user?.role || 'admin';
+        
+        // Pass token with role to keep admin token separate from customer token
+        setAuthToken(data.data.adminToken, adminRole);
+        
         router.push('/admin/dashboard');
       } else {
         setError(data.message || 'Login failed. Please try again.');

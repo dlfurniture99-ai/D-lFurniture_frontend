@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { products } from '@/lib/mockData';
+import { useState, useEffect } from 'react';
+import { getAllCategories, Category } from '@/lib/api';
 
 interface FilterState {
   priceRange: number;
@@ -19,11 +19,26 @@ interface FilterSidebarProps {
 
 export default function FilterSidebar({ filters, setFilters }: FilterSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
 
-  // Calculate product counts by category
-  const getCategoryCount = (category: string) => {
-    return products.filter(p => p.category === category).length;
-  };
+  // Fetch categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getAllCategories();
+        if (response.success && response.data?.categories) {
+          setCategories(response.data.categories);
+        }
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handlePriceChange = (value: number) => {
     setFilters({ ...filters, priceRange: value });
@@ -91,56 +106,36 @@ export default function FilterSidebar({ filters, setFilters }: FilterSidebarProp
         {/* Categories */}
         <div className="mb-6 pb-6 border-b border-gray-200">
           <h4 className="font-semibold text-gray-900 mb-4 text-sm">Categories</h4>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-center gap-2">
-              <input 
-                type="checkbox" 
-                id="sofas" 
-                className="w-4 h-4 cursor-pointer" 
-                checked={filters.materials.includes('sofas')}
-                onChange={() => handleMaterialChange('sofas')}
-              />
-              <label htmlFor="sofas" className="cursor-pointer text-gray-700">
-                Sofas
-              </label>
-            </li>
-            <li className="flex items-center gap-2">
-              <input 
-                type="checkbox" 
-                id="beds" 
-                className="w-4 h-4 cursor-pointer" 
-                checked={filters.materials.includes('beds')}
-                onChange={() => handleMaterialChange('beds')}
-              />
-              <label htmlFor="beds" className="cursor-pointer text-gray-700">
-                Beds
-              </label>
-            </li>
-            <li className="flex items-center gap-2">
-              <input 
-                type="checkbox" 
-                id="dining" 
-                className="w-4 h-4 cursor-pointer" 
-                checked={filters.materials.includes('dining-sets')}
-                onChange={() => handleMaterialChange('dining-sets')}
-              />
-              <label htmlFor="dining" className="cursor-pointer text-gray-700">
-                Dining
-              </label>
-            </li>
-            <li className="flex items-center gap-2">
-              <input 
-                type="checkbox" 
-                id="storage" 
-                className="w-4 h-4 cursor-pointer" 
-                checked={filters.materials.includes('storage')}
-                onChange={() => handleMaterialChange('storage')}
-              />
-              <label htmlFor="storage" className="cursor-pointer text-gray-700">
-                Storage
-              </label>
-            </li>
-          </ul>
+          {loadingCategories ? (
+            <p className="text-xs text-gray-500">Loading categories...</p>
+          ) : categories.length > 0 ? (
+            <ul className="space-y-2 text-sm">
+              {categories.map((category) => {
+                const categoryId = category._id || category.id;
+                const categorySlug = category.slug || category.name.toLowerCase();
+                
+                return (
+                  <li key={categoryId} className="flex items-center gap-2">
+                    <input 
+                      type="checkbox" 
+                      id={categorySlug}
+                      className="w-4 h-4 cursor-pointer" 
+                      checked={filters.materials.includes(categorySlug)}
+                      onChange={() => handleMaterialChange(categorySlug)}
+                    />
+                    <label htmlFor={categorySlug} className="cursor-pointer text-gray-700 flex-1">
+                      {category.name}
+                    </label>
+                    {category.productCount !== undefined && (
+                      <span className="text-xs text-gray-500">({category.productCount})</span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="text-xs text-gray-500">No categories available</p>
+          )}
         </div>
 
 

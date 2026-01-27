@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { use } from 'react';
-import Header from '@/components/Header';
+import HeaderNew from '@/components/HeaderNew';
 import OfferBar from '@/components/OfferBar';
 import FilterSidebar from '@/components/FilterSidebar';
 import ProductGrid from '@/components/ProductGrid';
@@ -46,14 +46,20 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
   const categoryName = getCategoryName(slug);
 
-  // Fetch furniture for this category
+  // Fetch all furniture (not just current category) to allow filtering by other categories
   useEffect(() => {
     const fetchCategoryProducts = async () => {
       try {
         setLoading(true);
-        const response = await getAllFurniture(1, 100, categoryName);
+        // Fetch all furniture to allow sidebar category filtering
+        // If no category filter selected, start with current category
+        const response = await getAllFurniture(1, 100, undefined);
         if (response.success && response.data?.furniture) {
-          setCategoryProducts(response.data.furniture);
+          // Filter to current category by default
+          const filtered = response.data.furniture.filter(
+            (product) => product.category?.toUpperCase() === categoryName.toUpperCase()
+          );
+          setCategoryProducts(filtered.length > 0 ? filtered : response.data.furniture);
         }
       } catch (error) {
         console.error('Failed to fetch category products:', error);
@@ -68,6 +74,15 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
   const filteredProducts = categoryProducts.filter((product) => {
     if (product.price > filters.priceRange) return false;
+    
+    if (filters.materials.length > 0) {
+      const productCategory = product.category?.toLowerCase() || '';
+      const matchesCategory = filters.materials.some(
+        (material) => productCategory.includes(material.toLowerCase())
+      );
+      if (!matchesCategory) return false;
+    }
+    
     if (filters.availability.length > 0) {
       const inStock = product.stock !== undefined ? product.stock > 0 : true;
       if (filters.availability.includes('instock') && !inStock) return false;
@@ -79,7 +94,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   return (
     <div className="w-full bg-gray-50">
       <OfferBar />
-      <Header />
+      <HeaderNew />
 
       {/* Category Header */}
       <section className="w-full bg-white py-12 border-b">

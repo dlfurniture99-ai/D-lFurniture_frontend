@@ -4,6 +4,8 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
+import HeaderNew from '@/components/HeaderNew';
+import Footer from '@/components/Footer';
 import { getAllFurniture, Furniture } from '@/lib/api';
 
 function SearchContent() {
@@ -45,8 +47,10 @@ function SearchContent() {
   }, [q]);
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-20">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+    <>
+      <HeaderNew />
+      <main className="min-h-screen bg-gray-50 pt-20">
+        <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <div className="mb-6 flex items-center gap-2 text-sm text-gray-600">
           <Link href="/" className="hover:text-yellow-500">
@@ -112,8 +116,10 @@ function SearchContent() {
             })}
           </div>
         )}
-      </div>
-    </main>
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 }
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import AdminLayout from '@/components/AdminLayout';
 import {
   getAllFurniture,
   createFurniture,
@@ -12,8 +13,13 @@ import {
   getAuthToken,
 } from '@/lib/api';
 import { removeAuthToken } from '@/lib/api';
+import { useAdminProtect } from '@/hooks/useAdminProtect';
+import { clearUserRole } from '@/lib/auth-utils';
+import { useAuth } from '@/lib/useAuth';
 
 export default function AdminDashboard() {
+  useAdminProtect(); // Protect this route
+  const { user } = useAuth();
   const [furniture, setFurniture] = useState<Furniture[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -89,7 +95,8 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     removeAuthToken();
-    router.push('/admin');
+    clearUserRole();
+    router.push('/auth/admin-login');
   };
 
   const handleAddFurniture = async (e: React.FormEvent) => {
@@ -168,39 +175,22 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-black">
-      {/* Admin Header */}
-      <header className="bg-yellow-600 text-white p-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold">D&L Admin Panel</h1>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition"
-          >
-            Logout
-          </button>
-        </div>
-      </header>
+    <AdminLayout adminEmail={user?.email || 'Admin'}>
+      {/* Dashboard Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-600 mt-2">Welcome back! Here's an overview of your store.</p>
+      </div>
 
-      <div className="max-w-7xl mx-auto p-4 text-black">
-        {/* Admin Navigation Tabs */}
-        <div className="mb-6 flex gap-3 border-b border-gray-300">
-          <button
-            className="px-6 py-3 font-semibold text-white bg-yellow-600 border-b-2 border-yellow-700 rounded-t-lg"
-          >
-            📦 Products
-          </button>
-          <Link href="/admin/orders">
-            <button
-              className="px-6 py-3 font-semibold text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-t-lg transition"
-            >
-              📋 Orders
-            </button>
-          </Link>
+      {/* Error Alert */}
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          {error}
         </div>
+      )}
 
-        {/* Dashboard Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      {/* Dashboard Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white rounded-lg p-6 shadow">
             <p className="text-gray-600 text-sm font-semibold">Total Products</p>
             <p className="text-3xl font-bold text-yellow-600">{furniture.length}</p>
@@ -246,12 +236,40 @@ export default function AdminDashboard() {
           >
             {showForm ? 'Cancel' : '+ Add New Furniture'}
           </button>
-        </div>
+      </div>
 
-        {/* Filters Section */}
-        <div className="bg-white rounded-lg p-4 shadow mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <button
+          onClick={() => router.push('/admin/products')}
+          className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-lg hover:shadow-lg transition"
+        >
+          <p className="text-4xl mb-2">📦</p>
+          <p className="font-semibold text-lg">Manage Products</p>
+          <p className="text-blue-100 text-sm">Add, edit, delete</p>
+        </button>
+        <button
+          onClick={() => router.push('/admin/orders')}
+          className="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-lg hover:shadow-lg transition"
+        >
+          <p className="text-4xl mb-2">📋</p>
+          <p className="font-semibold text-lg">View Orders</p>
+          <p className="text-green-100 text-sm">Track all orders</p>
+        </button>
+        <button
+          onClick={() => router.push('/admin/analytics')}
+          className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-lg hover:shadow-lg transition"
+        >
+          <p className="text-4xl mb-2">📈</p>
+          <p className="font-semibold text-lg">View Analytics</p>
+          <p className="text-purple-100 text-sm">See reports</p>
+        </button>
+      </div>
+
+      {/* Filters Section */}
+      <div className="bg-white rounded-lg p-4 shadow mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Filters</h3>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Search
@@ -521,80 +539,79 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* Furniture Table */}
-        <div className="bg-white rounded-lg shadow overflow-x-auto">
-          {loading ? (
-            <div className="p-8 text-center text-gray-600">Loading furniture...</div>
-          ) : (
-            <>
-              <table className="w-full">
-                <thead className="bg-gray-100 border-b">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Price</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">MRP</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Category</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Stock</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Discount</th>
-                    <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+      {/* Furniture Table */}
+      <div className="bg-white rounded-lg shadow overflow-x-auto">
+        {loading ? (
+          <div className="p-8 text-center text-gray-600">Loading furniture...</div>
+        ) : (
+          <>
+            <table className="w-full">
+              <thead className="bg-gray-100 border-b">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Price</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">MRP</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Category</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Stock</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Discount</th>
+                  <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {furniture.map((item) => (
+                  <tr key={item._id} className="border-b hover:bg-gray-50 transition">
+                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">{item.name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">₹{item.price.toLocaleString()}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">₹{item.mrp.toLocaleString()}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{item.category}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{item.stock}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{item.discount || 0}%</td>
+                    <td className="px-6 py-4 text-center text-sm space-x-2">
+                      <button
+                        onClick={() => handleEditFurniture(item)}
+                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteFurniture(item._id)}
+                        className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {furniture.map((item) => (
-                    <tr key={item._id} className="border-b hover:bg-gray-50 transition">
-                      <td className="px-6 py-4 text-sm text-gray-900 font-medium">{item.name}</td>
-                      <td className="px-6 py-4 text-sm text-gray-900">₹{item.price.toLocaleString()}</td>
-                      <td className="px-6 py-4 text-sm text-gray-900">₹{item.mrp.toLocaleString()}</td>
-                      <td className="px-6 py-4 text-sm text-gray-900">{item.category}</td>
-                      <td className="px-6 py-4 text-sm text-gray-900">{item.stock}</td>
-                      <td className="px-6 py-4 text-sm text-gray-900">{item.discount || 0}%</td>
-                      <td className="px-6 py-4 text-center text-sm space-x-2">
-                        <button
-                          onClick={() => handleEditFurniture(item)}
-                          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteFurniture(item._id)}
-                          className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                ))}
+              </tbody>
+            </table>
 
-              {furniture.length === 0 && (
-                <div className="p-8 text-center text-gray-600">No furniture found</div>
-              )}
+            {furniture.length === 0 && (
+              <div className="p-8 text-center text-gray-600">No furniture found</div>
+            )}
 
-              {/* Pagination */}
-              <div className="flex items-center justify-between p-4 bg-gray-50 border-t">
-                <button
-                  onClick={() => setPage(Math.max(1, page - 1))}
-                  disabled={page === 1}
-                  className="px-4 py-2 bg-gray-600 text-white rounded disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                <span className="text-gray-700">
-                  Page {page} of {totalPages}
-                </span>
-                <button
-                  onClick={() => setPage(Math.min(totalPages, page + 1))}
-                  disabled={page === totalPages}
-                  className="px-4 py-2 bg-gray-600 text-white rounded disabled:opacity-50"
-                >
-                  Next
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+            {/* Pagination */}
+            <div className="flex items-center justify-between p-4 bg-gray-50 border-t">
+              <button
+                onClick={() => setPage(Math.max(1, page - 1))}
+                disabled={page === 1}
+                className="px-4 py-2 bg-gray-600 text-white rounded disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="text-gray-700">
+                Page {page} of {totalPages}
+              </span>
+              <button
+                onClick={() => setPage(Math.min(totalPages, page + 1))}
+                disabled={page === totalPages}
+                className="px-4 py-2 bg-gray-600 text-white rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </>
+        )}
       </div>
-    </div>
+    </AdminLayout>
   );
 }

@@ -1,20 +1,22 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Header from '@/components/Header';
+import HeaderNew from '@/components/HeaderNew';
 import Footer from '@/components/Footer';
 import { useWishlist } from '@/lib/useWishlist';
 import { useCart } from '@/lib/useCart';
 
 export default function WishlistPage() {
   const { wishlist, loading, removeFromWishlist } = useWishlist();
-  const { addToCart } = useCart();
+  const { cart, addToCart, updateQuantity } = useCart();
+  const [isUpdating, setIsUpdating] = useState<string | null>(null);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
+        <HeaderNew />
         <main className="pt-24 pb-12 px-4 max-w-7xl mx-auto flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600"></div>
         </main>
@@ -25,7 +27,7 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+      <HeaderNew />
       <main className="pt-24 pb-12 px-4 max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl font-bold text-gray-900">My Wishlist</h1>
@@ -36,6 +38,39 @@ export default function WishlistPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {wishlist.filter((p: any) => p).map((product: any) => {
               const image = product.images?.[0] || product.image;
+              const productId = product._id || product.id;
+              const productIdString = String(productId);
+              const cartItem = cart.find(item => String(item.productId) === productIdString);
+              const quantityInCart = cartItem?.quantity || 0;
+              
+              const handleIncreaseQuantity = async () => {
+                try {
+                  setIsUpdating(productIdString);
+                  await updateQuantity(productIdString, quantityInCart + 1);
+                  window.dispatchEvent(new Event('storage'));
+                } catch (err) {
+                  console.error('Error updating quantity:', err);
+                } finally {
+                  setIsUpdating(null);
+                }
+              };
+
+              const handleDecreaseQuantity = async () => {
+                try {
+                  setIsUpdating(productIdString);
+                  if (quantityInCart <= 1) {
+                    await updateQuantity(productIdString, 0);
+                  } else {
+                    await updateQuantity(productIdString, quantityInCart - 1);
+                  }
+                  window.dispatchEvent(new Event('storage'));
+                } catch (err) {
+                  console.error('Error updating quantity:', err);
+                } finally {
+                  setIsUpdating(null);
+                }
+              };
+              
               return (
               <div key={product._id || product.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition group relative">
                 <Link href={`/product/${product._id || product.id}`}>
@@ -72,14 +107,36 @@ export default function WishlistPage() {
                   <Link href={`/product/${product._id || product.id}`}>
                     <h3 className="font-medium text-gray-900 line-clamp-1 mb-2 hover:text-yellow-600 transition">{product.name}</h3>
                   </Link>
-                  <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center justify-between mt-4 gap-2">
                     <p className="text-yellow-600 font-bold text-lg">₹{product.price?.toLocaleString()}</p>
-                    <button 
+                    {quantityInCart > 0 ? (
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={handleDecreaseQuantity}
+                          disabled={isUpdating === productIdString}
+                          className="px-2 py-1 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700 transition disabled:opacity-50"
+                        >
+                          −
+                        </button>
+                        <div className="px-3 py-1 bg-yellow-100 text-yellow-700 text-sm font-bold rounded text-center min-w-12">
+                          {quantityInCart}
+                        </div>
+                        <button
+                          onClick={handleIncreaseQuantity}
+                          disabled={isUpdating === productIdString}
+                          className="px-2 py-1 bg-green-600 text-white text-sm font-semibold rounded hover:bg-green-700 transition disabled:opacity-50"
+                        >
+                          +
+                        </button>
+                      </div>
+                    ) : (
+                      <button 
                         onClick={() => addToCart(product)}
                         className="px-4 py-2 bg-yellow-600 text-white text-sm font-semibold rounded-lg hover:bg-yellow-700 transition"
-                    >
+                      >
                         Add to Cart
-                    </button>
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

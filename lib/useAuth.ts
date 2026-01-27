@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getAuthToken, removeAuthToken } from './api';
+import { clearUserRole } from './auth-utils';
 
 export interface User {
   userId: string;
@@ -15,8 +16,29 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get token from localStorage
-    const storedToken = getAuthToken();
+    if (typeof window === 'undefined') return;
+    
+    // Check which mode this tab is in (sessionStorage is per-tab)
+    const activeMode = sessionStorage.getItem('activeMode');
+    
+    let storedToken: string | null = null;
+    
+    if (activeMode === 'admin') {
+      // This tab is in admin mode - get admin token
+      storedToken = localStorage.getItem('adminToken');
+    } else if (activeMode === 'customer') {
+      // This tab is in customer mode - get customer token
+      storedToken = localStorage.getItem('authToken');
+    } else {
+      // New tab with no activeMode set - ensure no token is used
+      storedToken = null;
+      // Clear any stale tokens for this tab to be safe
+      setUser(null);
+      setToken(null);
+      setIsLoading(false);
+      return;
+    }
+    
     setToken(storedToken);
     
     // Decode JWT to get user info
@@ -37,6 +59,8 @@ export function useAuth() {
         removeAuthToken();
         setToken(null);
       }
+    } else {
+      setUser(null);
     }
     
     setIsLoading(false);
@@ -44,6 +68,7 @@ export function useAuth() {
 
   const logout = () => {
     removeAuthToken();
+    clearUserRole();
     setToken(null);
     setUser(null);
   };

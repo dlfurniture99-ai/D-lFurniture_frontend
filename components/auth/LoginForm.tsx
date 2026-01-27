@@ -46,11 +46,19 @@ export default function LoginForm() {
       const response = await loginUser(formData);
       console.log('Login response:', response);
       
-      // Handle the response structure: { success, message, data: { token, user } }
-      if (response.success && response.data?.token) {
-        setAuthToken(response.data.token);
-        // Redirect to home immediately
-        router.push('/');
+      // Handle the response structure: { success, message, data: { userToken, user } }
+      if (response.success && response.data?.userToken) {
+        const userRole = response.data?.user?.role;
+        
+        // Pass token with role to keep admin and customer tokens separate
+        setAuthToken(response.data.userToken, userRole);
+        
+        // Redirect based on role
+        if (userRole === 'admin') {
+          router.push('/admin/dashboard');
+        } else {
+          router.push('/');
+        }
       } else {
         setError(response.message || 'Login failed. Please try again.');
       }

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import Header from '@/components/Header';
+import HeaderNew from '@/components/HeaderNew';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/useAuth';
 import { getUserDashboard, getUserProfile, getUserOrders, getUserWishlist } from '@/lib/api';
@@ -230,7 +230,7 @@ export default function AccountPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+      <HeaderNew />
       
       <main className="pt-24 pb-12 px-4 max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-8">

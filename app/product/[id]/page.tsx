@@ -3,7 +3,7 @@
 import { use, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Header from '@/components/Header';
+import HeaderNew from '@/components/HeaderNew';
 import OfferBar from '@/components/OfferBar';
 import Footer from '@/components/Footer';
 import StarRating from '@/components/StarRating';
@@ -69,7 +69,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     return (
       <div className="w-full">
         <OfferBar />
-        <Header />
+        <HeaderNew />
         <main className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
@@ -85,7 +85,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     return (
       <div className="w-full">
         <OfferBar />
-        <Header />
+        <HeaderNew />
         <main className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
@@ -127,7 +127,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   return (
     <div className="w-full">
       <OfferBar />
-      <Header />
+      <HeaderNew />
       <main className="min-h-screen bg-gray-50 pt-20">
         <div className="max-w-7xl mx-auto px-4 py-8">
           {/* Breadcrumb */}
