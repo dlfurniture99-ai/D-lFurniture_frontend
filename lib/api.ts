@@ -631,7 +631,7 @@ export interface CategoriesResponse {
 // Fetch all categories (public endpoint)
 export async function getAllCategories(): Promise<CategoriesResponse> {
   try {
-    const response = await apiClient.get<CategoriesResponse>('/categories/public-category');
+    const response = await apiClient.get<CategoriesResponse>('/categories');
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
