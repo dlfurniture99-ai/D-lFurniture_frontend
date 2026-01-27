@@ -126,9 +126,6 @@ export default function FilterSidebar({ filters, setFilters }: FilterSidebarProp
                     <label htmlFor={categorySlug} className="cursor-pointer text-gray-700 flex-1">
                       {category.name}
                     </label>
-                    {category.productCount !== undefined && (
-                      <span className="text-xs text-gray-500">({category.productCount})</span>
-                    )}
                   </li>
                 );
               })}

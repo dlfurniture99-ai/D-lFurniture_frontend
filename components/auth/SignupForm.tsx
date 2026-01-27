@@ -80,9 +80,9 @@ export default function SignupForm() {
         password: formData.password,
       });
 
-      // Handle the response structure: { success, message, data: { userToken, user } }
-      if (response.success && response.data?.userToken) {
-        setAuthToken(response.data.userToken);
+      // Handle the response structure: { success, message, data: { token, user } }
+      if (response.success && response.data?.token) {
+        setAuthToken(response.data.token);
         
         // Store user role
         const userRole = response.data?.user?.role;

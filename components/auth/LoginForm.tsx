@@ -46,12 +46,12 @@ export default function LoginForm() {
       const response = await loginUser(formData);
       console.log('Login response:', response);
       
-      // Handle the response structure: { success, message, data: { userToken, user } }
-      if (response.success && response.data?.userToken) {
+      // Handle the response structure: { success, message, data: { token, user } }
+      if (response.success && response.data?.token) {
         const userRole = response.data?.user?.role;
         
         // Pass token with role to keep admin and customer tokens separate
-        setAuthToken(response.data.userToken, userRole);
+        setAuthToken(response.data.token, userRole);
         
         // Redirect based on role
         if (userRole === 'admin') {
