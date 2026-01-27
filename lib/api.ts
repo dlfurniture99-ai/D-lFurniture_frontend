@@ -1,10 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
 // API configuration
-const API_BASE_URL = 
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:5000/api'
-    : process.env.NEXT_PUBLIC_API_URL || 'https://d-l-furniture-backend.vercel.app/api';
+const API_BASE_URL = 'https://d-l-furniture-backend.vercel.app/api';
 
 // Create axios instance
 export const apiClient: AxiosInstance = axios.create({
@@ -12,7 +9,7 @@ export const apiClient: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-});
+}); 
 
 // Request interceptor to add auth token and handle FormData
 apiClient.interceptors.request.use(
