@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 import { Product } from '@/lib/mockData';
 import { getAllProducts } from '@/app/apis/products';
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const q = searchParams.get('q');
   const query = q?.toLowerCase() || '';
@@ -117,7 +117,15 @@ export default function SearchPage() {
             </div>
           )}
         </div>
-      </main>
-    </div>
-  );
-  }
+        </main>
+        </div>
+        );
+        }
+
+        export default function SearchPage() {
+        return (
+        <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="text-gray-500">Loading search results...</div></div>}>
+        <SearchPageContent />
+        </Suspense>
+        );
+        }

@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { toast, Toaster } from 'sonner';
 import Link from 'next/link';
 import { userApi } from '@/app/apis/config';
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -83,9 +83,17 @@ export default function VerifyEmailPage() {
                 Register Again
               </Link>
             </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+            )}
+            </div>
+            </div>
+            </div>
+            );
+            }
+
+            export default function VerifyEmailPage() {
+            return (
+            <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50 flex items-center justify-center"><div className="text-gray-500">Verifying email...</div></div>}>
+            <VerifyEmailContent />
+            </Suspense>
+            );
+            }

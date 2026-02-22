@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Head from 'next/head';
@@ -13,7 +13,7 @@ import { getAllProducts } from '@/app/apis/products';
 import { userApi } from '@/app/apis/config';
 import { FaShare, FaWhatsapp, FaFacebook, FaTwitter, FaLink } from 'react-icons/fa';
 
-export default function ProductPage() {
+function ProductPageContent() {
   const searchParams = useSearchParams();
   const productSlug = searchParams.get('product');
   const productId = searchParams.get('id');
@@ -713,9 +713,17 @@ export default function ProductPage() {
                 );
               })}
             </div>
-          </section>
-        )}
-      </main>
-    </div>
-  );
-}
+            </section>
+            )}
+            </main>
+            </div>
+            );
+            }
+
+            export default function ProductPage() {
+            return (
+            <Suspense fallback={<main className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="text-gray-500">Loading product...</div></main>}>
+            <ProductPageContent />
+            </Suspense>
+            );
+            }

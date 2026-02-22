@@ -130,7 +130,7 @@ export default function WishlistPage() {
 
                         {/* Rating */}
                         <div className="mb-3">
-                          <StarRating rating={product.rating || product.productReview || 0} reviews={product.reviews || 0} />
+                          <StarRating rating={product.rating || 0} reviews={typeof product.reviews === 'number' ? product.reviews : 0} />
                         </div>
 
                         {/* Price */}
@@ -159,7 +159,7 @@ export default function WishlistPage() {
                             Add to Cart
                           </button>
                           <button
-                            onClick={() => handleRemoveFromWishlist(product.productSlug)}
+                            onClick={() => handleRemoveFromWishlist(product.productSlug || '')}
                             className="flex-1 bg-red-50 text-red-600 py-2 rounded-lg font-semibold hover:bg-red-100 transition text-sm"
                           >
                             Remove

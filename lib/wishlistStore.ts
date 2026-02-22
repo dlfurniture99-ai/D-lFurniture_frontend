@@ -45,8 +45,8 @@ export const wishlistStore = {
   },
 
   toggleWishlist: (product: Product) => {
-    if (wishlistStore.isInWishlist(product.productSlug)) {
-      wishlistStore.removeItem(product.productSlug);
+    if (wishlistStore.isInWishlist(product.productSlug || '')) {
+      wishlistStore.removeItem(product.productSlug || '');
     } else {
       wishlistStore.addItem(product);
     }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -11,7 +11,7 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { login as apiLogin } from '@/lib/api';
 import { userApi } from '../apis/config';
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get('redirect') || '/';
@@ -417,5 +417,13 @@ export default function LoginPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-yellow-500"></div></div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 }

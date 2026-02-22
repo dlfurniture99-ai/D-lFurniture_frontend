@@ -64,7 +64,7 @@ export const cartStore = {
 
   getTotal: () => {
     const cart = getCartFromStorage();
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cart.reduce((total, item) => total + (item.price || 0) * item.quantity, 0);
   },
 
   getCount: () => {

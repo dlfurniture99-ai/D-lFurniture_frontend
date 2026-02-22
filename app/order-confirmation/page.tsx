@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { FaCheckCircle, FaBox, FaPhone, FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
 
-export default function OrderConfirmationPage() {
+function OrderConfirmationContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const orderId = searchParams.get('orderId');
@@ -172,6 +172,14 @@ export default function OrderConfirmationPage() {
           </div>
         </div>
       </div>
-    </main>
-  );
-}
+      </main>
+      );
+      }
+
+      export default function OrderConfirmationPage() {
+      return (
+      <Suspense fallback={<main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pt-24 flex items-center justify-center"><div className="text-white text-xl">Loading order details...</div></main>}>
+      <OrderConfirmationContent />
+      </Suspense>
+      );
+      }
