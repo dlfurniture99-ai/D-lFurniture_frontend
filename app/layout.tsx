@@ -58,6 +58,11 @@ export const metadata: Metadata = {
   creator: "D&L Furnitech",
   publisher: "D&L Furnitech",
   robots: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  icons: {
+    icon: "/logo.ico",
+    apple: "/logo.jpg",
+    shortcut: "/logo.ico",
+  },
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -66,6 +71,14 @@ export const metadata: Metadata = {
     title: "D&L Furnitech - Premium Solid Wood Furniture Online",
     description: siteConfig.description,
     images: [
+      {
+        url: `${siteConfig.siteUrl}/logo.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "D&L Furnitech - Premium Wooden Furniture",
+        type: "image/jpeg",
+        secureUrl: `${siteConfig.siteUrl}/logo.jpg`,
+      },
       {
         url: `${siteConfig.siteUrl}/hero.png`,
         width: 1200,
@@ -81,10 +94,25 @@ export const metadata: Metadata = {
     creator: siteConfig.socialMedia.twitter,
     title: "D&L Furnitech - Premium Wooden Furniture Online",
     description: siteConfig.description,
-    images: [`${siteConfig.siteUrl}/hero.png`],
+    images: [`${siteConfig.siteUrl}/logo.jpg`, `${siteConfig.siteUrl}/hero.png`],
   },
   alternates: {
     canonical: siteConfig.siteUrl,
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
+  formatDetection: {
+    email: false,
+    telephone: false,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "D&L Furnitech",
   },
 };
 
@@ -96,6 +124,29 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Favicon */}
+        <link rel="icon" type="image/x-icon" href="/logo.ico" />
+        <link rel="shortcut icon" href="/logo.ico" />
+        <link rel="apple-touch-icon" href="/logo.jpg" sizes="180x180" />
+        
+        {/* Manifest */}
+        <link rel="manifest" href="/site.webmanifest" />
+
+        {/* Additional Meta Tags */}
+        <meta name="theme-color" content="#D4AF37" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="D&L Furnitech" />
+        <meta name="msapplication-TileColor" content="#D4AF37" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
+        <meta charSet="utf-8" />
+        <meta httpEquiv="x-ua-compatible" content="ie=edge" />
+        <meta name="language" content="English" />
+        <meta name="revisit-after" content="7 days" />
+        <meta name="author" content="D&L Furnitech" />
+        <meta name="contact" content="+91 85628 75794" />
+        
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
@@ -128,11 +179,29 @@ export default function RootLayout({
           }}
         />
 
-        {/* Additional Meta Tags */}
-        <meta name="theme-color" content="#D4AF37" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <link rel="apple-touch-icon" href="/logo.jpg" />
+        {/* Website Schema */}
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "D&L Furnitech",
+              "description": siteConfig.description,
+              "url": siteConfig.siteUrl,
+              "image": `${siteConfig.siteUrl}/logo.jpg`,
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": `${siteConfig.siteUrl}/search?q={search_term_string}`
+                },
+                "query-input": "required name=search_term_string"
+              }
+            }),
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${poppins.variable} ${outfit.variable} ${inter.variable} ${lora.variable} antialiased`}
