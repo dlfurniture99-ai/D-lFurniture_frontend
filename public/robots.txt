@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Allow: /product/*
+Allow: /category/*
+Allow: /wishlist
+Allow: /cart
+Allow: /checkout
+Allow: /about
+Allow: /search
+
+Disallow: /admin
+Disallow: /api/*
+
+Sitemap: https://dlfurnitures.com/sitemap.xml
+
+# Crawl delay (in seconds)
+Crawl-delay: 1
+
+# Request rate (pages per second)
+Request-rate: 10/1s
