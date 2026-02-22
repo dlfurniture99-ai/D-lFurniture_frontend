@@ -1,7 +1,10 @@
 // Admin API - uses cookies for authentication
 // JWT token is stored in httpOnly cookie by backend
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dandlfurnitech-services.vercel.app';
+const API_BASE_URL = 
+  process.env.NODE_ENV === 'development' 
+    ? 'http://localhost:8000'
+    : process.env.NEXT_PUBLIC_API_URL || 'https://dandlfurnitech-services.vercel.app';
 
 /**
  * Fetch with cookies and error handling

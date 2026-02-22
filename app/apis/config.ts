@@ -3,7 +3,18 @@
 // ============================================================
 
 // Environment variables (Next.js client-side safe)
-const API_BASE_URL = (globalThis as any).NEXT_PUBLIC_API_URL || 'https://dandlfurnitech-services.vercel.app/api';
+const getApiBaseUrl = () => {
+  // For client-side code running in browser
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:8000/api';
+    }
+  }
+  // Fall back to env variable or production URL
+  return (globalThis as any).NEXT_PUBLIC_API_URL || 'https://dandlfurnitech-services.vercel.app/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 const NODE_ENV = (globalThis as any).NODE_ENV || 'development';
 
 // ============================================================

@@ -1,6 +1,9 @@
 import { userApi } from "@/app/apis/config";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dandlfurnitech-services.vercel.app/api';
+const API_BASE_URL = 
+  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:8000/api'
+    : process.env.NEXT_PUBLIC_API_URL || 'https://dandlfurnitech-services.vercel.app/api';
 
 export interface AuthResponse {
   success: boolean;

@@ -59,9 +59,9 @@ export const metadata: Metadata = {
   publisher: "D&L Furnitech",
   robots: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
   icons: {
-    icon: "/logo.jpg",
+    icon: "/favicon.ico",
     apple: "/logo.jpg",
-    shortcut: "/logo.jpg",
+    shortcut: "/favicon.ico",
   },
   openGraph: {
     type: "website",
@@ -72,12 +72,12 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [
       {
-        url: `${siteConfig.siteUrl}/logo.jpg`,
+        url: `${siteConfig.siteUrl}/og-image.jpg`,
         width: 1200,
         height: 630,
         alt: "D&L Furnitech - Premium Wooden Furniture",
         type: "image/jpeg",
-        secureUrl: `${siteConfig.siteUrl}/logo.jpg`,
+        secureUrl: `${siteConfig.siteUrl}/og-image.jpg`,
       },
       {
         url: `${siteConfig.siteUrl}/hero.png`,
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
     creator: siteConfig.socialMedia.twitter,
     title: "D&L Furnitech - Premium Wooden Furniture Online",
     description: siteConfig.description,
-    images: [`${siteConfig.siteUrl}/logo.jpg`, `${siteConfig.siteUrl}/hero.png`],
+    images: [`${siteConfig.siteUrl}/og-image.jpg`, `${siteConfig.siteUrl}/hero.png`],
   },
   alternates: {
     canonical: siteConfig.siteUrl,
@@ -125,8 +125,8 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Favicon */}
-        <link rel="icon" type="image/jpeg" href="/logo.jpg" />
-        <link rel="shortcut icon" href="/logo.jpg" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/logo.jpg" sizes="180x180" />
         
         {/* Manifest */}

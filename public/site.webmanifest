@@ -1,0 +1,33 @@
+{
+  "name": "D&L Furnitech - Premium Solid Wood Furniture",
+  "short_name": "D&L Furnitech",
+  "description": "Buy premium solid wood furniture online in India. Premium wooden furniture delivery across India.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#D4AF37",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["shopping", "furniture"],
+  "screenshots": [
+    {
+      "src": "/hero.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ]
+}
