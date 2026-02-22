@@ -3,7 +3,7 @@
 // ============================================================
 
 // Environment variables (Next.js client-side safe)
-const API_BASE_URL = (globalThis as any).NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = (globalThis as any).NEXT_PUBLIC_API_URL || 'https://dandlfurnitech-services.vercel.app/api';
 const NODE_ENV = (globalThis as any).NODE_ENV || 'development';
 
 // ============================================================

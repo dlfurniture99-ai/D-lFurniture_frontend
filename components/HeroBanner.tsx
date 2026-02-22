@@ -28,7 +28,7 @@ export default function HeroBanner({ onCategorySelect }: HeroBannerProps) {
     // Fetch categories from backend or use default categories
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/products`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://dandlfurnitech-services.vercel.app/api'}/products`);
         const data = await response.json();
         
         // Extract unique categories from products

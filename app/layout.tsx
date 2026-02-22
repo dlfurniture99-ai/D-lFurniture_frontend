@@ -59,9 +59,9 @@ export const metadata: Metadata = {
   publisher: "D&L Furnitech",
   robots: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
   icons: {
-    icon: "/logo.ico",
+    icon: "/logo.jpg",
     apple: "/logo.jpg",
-    shortcut: "/logo.ico",
+    shortcut: "/logo.jpg",
   },
   openGraph: {
     type: "website",
@@ -125,8 +125,8 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Favicon */}
-        <link rel="icon" type="image/x-icon" href="/logo.ico" />
-        <link rel="shortcut icon" href="/logo.ico" />
+        <link rel="icon" type="image/jpeg" href="/logo.jpg" />
+        <link rel="shortcut icon" href="/logo.jpg" />
         <link rel="apple-touch-icon" href="/logo.jpg" sizes="180x180" />
         
         {/* Manifest */}
