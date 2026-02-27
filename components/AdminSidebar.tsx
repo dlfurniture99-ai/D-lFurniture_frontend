@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { FaTachometerAlt, FaBox, FaShoppingCart, FaUsers, FaChartBar, FaCog, FaSignOutAlt, FaTruck } from 'react-icons/fa';
 
@@ -34,10 +35,20 @@ export default function AdminSidebar({ isOpen, onToggle }: AdminSidebarProps) {
     <div className={`${isOpen ? 'w-64' : 'w-20'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col fixed h-screen max-sm:${!isOpen ? 'w-0' : 'w-full'} max-sm:z-50`}>
       {/* Logo */}
       <div className="h-20 border-b border-gray-200 flex items-center justify-center">
-        <div className="text-center">
-          <div className="font-bold text-lg text-yellow-600">D&L</div>
-          <div className={`text-xs text-gray-600 ${!isOpen && 'hidden'}`}>Admin</div>
-        </div>
+        {isOpen ? (
+          <Image 
+            src="/logo.jpg" 
+            alt="The Wooden Space" 
+            width={48}
+            height={48}
+            className="h-12 w-auto object-contain"
+            priority
+          />
+        ) : (
+          <div className="text-center">
+            <div className="font-bold text-lg text-yellow-600">TWS</div>
+          </div>
+        )}
       </div>
 
       {/* Navigation */}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FaShoppingCart, FaUser, FaBars, FaTimes, FaHeart, FaBox } from 'react-icons/fa';
 
@@ -28,8 +29,16 @@ export default function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-slate-900/95 to-purple-900/95 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-purple-400 bg-clip-text text-transparent">
-          The Wooden Space
+        <Link href="/" className="flex items-center gap-2">
+          <Image 
+            src="/logo.jpg" 
+            alt="The Wooden Space" 
+            width={40}
+            height={40}
+            className="h-10 w-auto object-contain"
+            priority
+          />
+          <span className="text-lg font-bold text-yellow-400 hidden sm:inline">The Wooden Space</span>
         </Link>
 
         {/* Desktop Menu */}

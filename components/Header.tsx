@@ -341,7 +341,7 @@ export default function Header() {
       )}
 
       {/* Navigation Bar */}
-      <nav className="border-t border-neutral-800">
+      <nav className="bg-orange-300">
         {/* Desktop Navigation */}
         <div className="hidden md:flex justify-center px-8 py-2 overflow-x-auto scrollbar-hide">
           {categories.map((cat) => (
@@ -349,7 +349,7 @@ export default function Header() {
               key={cat.slug}
               href={cat.link || `/category/${cat.slug}`}
               onClick={closeMenus}
-              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-yellow-500 border-b-2 border-transparent hover:border-yellow-500 transition whitespace-nowrap"
+              className="px-4 py-2 text-sm font-medium text-gray-900 hover:text-orange-600 border-b-2 border-transparent hover:border-orange-600 transition whitespace-nowrap"
             >
               {cat.name}
             </Link>
@@ -358,7 +358,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-neutral-900 border-t border-neutral-800 p-4 space-y-2 max-h-96 overflow-y-auto">
+          <div className="md:hidden bg-yellow-400 border-t border-neutral-800 p-4 space-y-2 max-h-96 overflow-y-auto">
             {categories.map((cat) => (
               <Link
                 key={cat.slug}
