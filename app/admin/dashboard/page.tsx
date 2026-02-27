@@ -24,7 +24,7 @@ interface Booking {
 
 export default function AdminOverview() {
   const router = useRouter();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [stats, setStats] = useState<BookingStat>({ total: 0, completed: 0, pending: 0, revenue: 0 });
   const [loading, setLoading] = useState(true);
 
@@ -71,9 +71,9 @@ export default function AdminOverview() {
         <AdminTopNav onMenuToggle={() => setSidebarOpen(!sidebarOpen)} title="Dashboard" />
 
         <div className="flex-1 overflow-auto">
-          <div className="p-8">
+          <div className="p-4 md:p-6 lg:p-8">
             {/* Stats Cards */}
-            <div className="grid grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
               <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div>
@@ -124,9 +124,9 @@ export default function AdminOverview() {
             </div>
 
             {/* Quick Stats Box */}
-            <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Overview</h2>
-              <div className="grid grid-cols-3 gap-6">
+            <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200 shadow-sm">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">Overview</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 <div>
                   <p className="text-gray-600 text-sm mb-2">Completion Rate</p>
                   <div className="flex items-baseline gap-2">

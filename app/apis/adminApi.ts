@@ -10,6 +10,8 @@ const API_BASE_URL =
  * Fetch with cookies and error handling
  */
 const fetchWithCookies = async (url: string, options: RequestInit = {}) => {
+  console.log(`[Admin API] ${options.method || 'GET'} ${url}`);
+  
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -21,6 +23,7 @@ const fetchWithCookies = async (url: string, options: RequestInit = {}) => {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
+    console.error(`[Admin API Error] ${response.status}: ${error.message || 'Unknown error'}`);
     throw new Error(error.message || `HTTP ${response.status}`);
   }
 

@@ -1,6 +1,6 @@
 export const siteConfig = {
-  name: 'D&L Furnitech',
-  description: 'Buy Premium Solid Wood Furniture Online in India - D&L Furnitech offers handcrafted wooden furniture, sofas, beds, dining tables, and more at affordable prices with free delivery.',
+  name: 'The Wooden Space',
+  description: 'Buy Premium Solid Wood Furniture Online in India - The Wooden Space offers handcrafted wooden furniture, sofas, beds, dining tables, and more at affordable prices with free delivery.',
   keywords: [
     'wooden furniture online',
     'solid wood furniture',
@@ -28,9 +28,9 @@ export const schemaMarkup = {
   organization: {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'D&L Furnitech',
+    name: 'The Wooden Space',
     url: siteConfig.siteUrl,
-    logo: `${siteConfig.siteUrl}/logo.jpg`,
+    logo: `${siteConfig.siteUrl}/woodenspace.png`,
     description: siteConfig.description,
     sameAs: [
       'https://www.facebook.com/DLFurnitures',
@@ -47,7 +47,7 @@ export const schemaMarkup = {
   localBusiness: {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    name: 'D&L Furnitech',
+    name: 'The Wooden Space',
     image: `${siteConfig.siteUrl}/hero.png`,
     description: siteConfig.description,
     url: siteConfig.siteUrl,

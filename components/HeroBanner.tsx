@@ -90,7 +90,7 @@ export default function HeroBanner({ onCategorySelect }: HeroBannerProps) {
           {/* Header */}
           <div className="text-center mb-6 md:mb-8">
             <h1 className="text-lg md:text-2xl font-bold text-white mb-2 drop-shadow-lg">
-              Welcome to D&L Furnitech
+              Welcome to The Wooden Space
             </h1>
             <p className="text-xs sm:text-sm md:text-base text-gray-50 mb-4 font-semibold drop-shadow-md">
               Premium Solid Wood Furniture for Your Lifestyle

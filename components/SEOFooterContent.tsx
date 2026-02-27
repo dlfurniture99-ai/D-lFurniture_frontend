@@ -112,7 +112,7 @@ export default function SEOFooterContent() {
         </div>
 
         {/* Why Choose D&L Section */}
-        <div className="mb-12 bg-neutral-900 rounded-lg p-8">
+        <div className="mb-12 bg-orange-400 rounded-lg p-8">
           <h3 className="text-3xl font-bold text-white mb-6">
             Why Choose D&L Furnitech for Your Home?
           </h3>
@@ -151,7 +151,7 @@ export default function SEOFooterContent() {
         </div>
 
         {/* Final CTA Section */}
-        <div className="text-center bg-gradient-to-r from-neutral-900 to-neutral-800 rounded-lg p-8">
+        <div className="text-center bg-orange-500 rounded-lg p-8">
           <h3 className="text-2xl font-bold text-white mb-4">
             Shop Premium Solid Wood Furniture Online at D&L Furnitech
           </h3>

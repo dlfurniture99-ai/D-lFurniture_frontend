@@ -31,7 +31,7 @@ export default function AdminSidebar({ isOpen, onToggle }: AdminSidebarProps) {
   };
 
   return (
-    <div className={`${isOpen ? 'w-64' : 'w-20'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col fixed h-screen`}>
+    <div className={`${isOpen ? 'w-64' : 'w-20'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col fixed h-screen max-sm:${!isOpen ? 'w-0' : 'w-full'} max-sm:z-50`}>
       {/* Logo */}
       <div className="h-20 border-b border-gray-200 flex items-center justify-center">
         <div className="text-center">

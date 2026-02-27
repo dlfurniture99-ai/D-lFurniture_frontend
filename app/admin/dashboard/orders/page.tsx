@@ -28,7 +28,7 @@ interface Order {
 
 export default function OrdersPage() {
   const router = useRouter();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -127,7 +127,7 @@ export default function OrdersPage() {
         <AdminTopNav onMenuToggle={() => setSidebarOpen(!sidebarOpen)} title="Orders" />
 
         <div className="flex-1 overflow-auto">
-          <div className="p-8">
+          <div className="p-4 md:p-6 lg:p-8">
             {loading ? (
               <div className="flex items-center justify-center h-96">
                 <div className="animate-spin">
@@ -136,71 +136,59 @@ export default function OrdersPage() {
               </div>
             ) : (
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-xl font-bold text-gray-900">All Orders</h2>
-                  <p className="text-sm text-gray-600 mt-1">{orders.length} orders total</p>
+                <div className="p-4 md:p-6 border-b border-gray-200">
+                  <h2 className="text-lg md:text-xl font-bold text-gray-900">All Orders</h2>
+                  <p className="text-xs md:text-sm text-gray-600 mt-1">{orders.length} orders total</p>
                 </div>
                 <div className="overflow-x-auto">
-                  {orders.length === 0 ? (
-                    <div className="p-8 text-center">
-                      <p className="text-gray-600">No orders found</p>
-                    </div>
-                  ) : (
-                    <table className="w-full text-sm">
-                       <thead className="bg-gray-50 border-b border-gray-200">
-                         <tr>
-                           <th className="px-4 py-3 text-left font-semibold text-gray-900">Booking ID</th>
-                           <th className="px-4 py-3 text-left font-semibold text-gray-900">Customer</th>
-                           <th className="px-4 py-3 text-left font-semibold text-gray-900">Product</th>
-                           <th className="px-4 py-3 text-left font-semibold text-gray-900">Qty</th>
-                           <th className="px-4 py-3 text-left font-semibold text-gray-900">Amount</th>
-                           <th className="px-4 py-3 text-left font-semibold text-gray-900">Address</th>
-                           <th className="px-4 py-3 text-left font-semibold text-gray-900">Date</th>
-                           <th className="px-4 py-3 text-left font-semibold text-gray-900">Payment Method</th>
-                           <th className="px-4 py-3 text-left font-semibold text-gray-900">Status</th>
-                           <th className="px-4 py-3 text-left font-semibold text-gray-900">Payment Status</th>
-                         </tr>
-                       </thead>
+                   {orders.length === 0 ? (
+                     <div className="p-8 text-center">
+                       <p className="text-gray-600">No orders found</p>
+                     </div>
+                   ) : (
+                     <table className="w-full text-xs md:text-sm">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                          <tr>
+                            <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-900">Booking ID</th>
+                            <th className="hidden sm:table-cell px-2 md:px-4 py-3 text-left font-semibold text-gray-900">Customer</th>
+                            <th className="hidden md:table-cell px-2 md:px-4 py-3 text-left font-semibold text-gray-900">Product</th>
+                            <th className="px-2 md:px-4 py-3 text-center font-semibold text-gray-900">Qty</th>
+                            <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-900">Amount</th>
+                            <th className="hidden lg:table-cell px-2 md:px-4 py-3 text-left font-semibold text-gray-900">Address</th>
+                            <th className="hidden sm:table-cell px-2 md:px-4 py-3 text-left font-semibold text-gray-900">Date</th>
+                            <th className="hidden xl:table-cell px-2 md:px-4 py-3 text-left font-semibold text-gray-900">Payment</th>
+                            <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-900">Status</th>
+                          </tr>
+                        </thead>
                        <tbody className="divide-y divide-gray-200">
                          {orders.map(order => (
                            <tr key={order._id} className="hover:bg-gray-50 transition">
-                             <td className="px-4 py-4 text-gray-900 font-semibold">{order.bookingId}</td>
-                             <td className="px-4 py-4 text-gray-700">
-                               <div className="font-medium">{order.userId?.name || 'Unknown'}</div>
+                             <td className="px-2 md:px-4 py-4 text-gray-900 font-semibold text-xs md:text-sm">{order.bookingId}</td>
+                             <td className="hidden sm:table-cell px-2 md:px-4 py-4 text-gray-700">
+                               <div className="font-medium text-xs md:text-sm">{order.userId?.name || 'Unknown'}</div>
                                <div className="text-xs text-gray-500">{order.userId?.email}</div>
                                <div className="text-xs text-gray-500">{order.userId?.phone}</div>
                              </td>
-                             <td className="px-4 py-4 text-gray-700">
-                               <div className="font-medium">{order.productId?.name || 'N/A'}</div>
+                             <td className="hidden md:table-cell px-2 md:px-4 py-4 text-gray-700">
+                               <div className="font-medium text-xs md:text-sm">{order.productId?.name || 'N/A'}</div>
                                <div className="text-xs text-gray-500">₹{order.productId?.price || 0}</div>
                              </td>
-                             <td className="px-4 py-4 text-gray-700 text-center">{order.quantity}</td>
-                             <td className="px-4 py-4 text-gray-900 font-semibold">₹{order.totalPrice.toLocaleString()}</td>
-                             <td className="px-4 py-4 text-gray-700 text-xs">
+                             <td className="px-2 md:px-4 py-4 text-gray-700 text-center text-xs md:text-sm">{order.quantity}</td>
+                             <td className="px-2 md:px-4 py-4 text-gray-900 font-semibold text-xs md:text-sm">₹{order.totalPrice.toLocaleString()}</td>
+                             <td className="hidden lg:table-cell px-2 md:px-4 py-4 text-gray-700 text-xs">
                                <div>{order.shippingAddress?.street}</div>
                                <div>{order.shippingAddress?.city}, {order.shippingAddress?.state}</div>
                                <div>{order.shippingAddress?.zipCode}</div>
                              </td>
-                             <td className="px-4 py-4 text-gray-600 whitespace-nowrap">{formatDate(order.createdAt)}</td>
-                             <td className="px-4 py-4">
-                               <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getPaymentMethodColor(order.paymentMethod || 'cod')}`}>
-                                 {getPaymentMethodLabel(order.paymentMethod || 'cod')}
+                             <td className="hidden sm:table-cell px-2 md:px-4 py-4 text-gray-600 whitespace-nowrap text-xs md:text-sm">{formatDate(order.createdAt)}</td>
+                             <td className="hidden xl:table-cell px-2 md:px-4 py-4">
+                               <span className={`px-1.5 md:px-2 py-1 rounded-full text-xs font-semibold ${getPaymentMethodColor(order.paymentMethod || 'cod')}`}>
+                                 {getPaymentMethodLabel(order.paymentMethod || 'cod').slice(0, 3)}
                                </span>
                              </td>
-                             <td className="px-4 py-4">
-                               <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
+                             <td className="px-2 md:px-4 py-4">
+                               <span className={`px-1.5 md:px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
                                  {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                               </span>
-                             </td>
-                             <td className="px-4 py-4">
-                               <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                 order.paymentStatus === 'completed' 
-                                   ? 'bg-green-100 text-green-700' 
-                                   : order.paymentStatus === 'pending'
-                                   ? 'bg-yellow-100 text-yellow-700'
-                                   : 'bg-gray-100 text-gray-700'
-                               }`}>
-                                 {order.paymentStatus?.charAt(0).toUpperCase() + (order.paymentStatus?.slice(1) || '')}
                                </span>
                              </td>
                            </tr>

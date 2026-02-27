@@ -17,7 +17,7 @@ interface Customer {
 
 export default function CustomersPage() {
   const router = useRouter();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -53,32 +53,32 @@ export default function CustomersPage() {
         <AdminTopNav onMenuToggle={() => setSidebarOpen(!sidebarOpen)} title="Customers" />
 
         <div className="flex-1 overflow-auto">
-          <div className="p-8">
+          <div className="p-4 md:p-6 lg:p-8">
             <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900">All Customers</h2>
+              <div className="p-4 md:p-6 border-b border-gray-200">
+                <h2 className="text-lg md:text-xl font-bold text-gray-900">All Customers</h2>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full text-xs md:text-sm">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
-                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Name</th>
-                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Email</th>
-                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Phone</th>
-                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Orders</th>
-                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Total Spent</th>
-                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Join Date</th>
+                      <th className="px-3 md:px-6 py-3 text-left font-semibold text-gray-900">Name</th>
+                      <th className="hidden sm:table-cell px-3 md:px-6 py-3 text-left font-semibold text-gray-900">Email</th>
+                      <th className="hidden md:table-cell px-3 md:px-6 py-3 text-left font-semibold text-gray-900">Phone</th>
+                      <th className="px-3 md:px-6 py-3 text-center font-semibold text-gray-900">Orders</th>
+                      <th className="px-3 md:px-6 py-3 text-left font-semibold text-gray-900">Total Spent</th>
+                      <th className="hidden sm:table-cell px-3 md:px-6 py-3 text-left font-semibold text-gray-900">Join Date</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {customers.map(customer => (
                       <tr key={customer._id} className="hover:bg-gray-50 transition">
-                        <td className="px-6 py-4 text-sm text-gray-900 font-semibold">{customer.name}</td>
-                        <td className="px-6 py-4 text-sm text-gray-600">{customer.email}</td>
-                        <td className="px-6 py-4 text-sm text-gray-600">{customer.phone}</td>
-                        <td className="px-6 py-4 text-sm text-gray-600 font-medium">{customer.totalOrders}</td>
-                        <td className="px-6 py-4 text-sm text-gray-900 font-semibold">₹{customer.totalSpent.toLocaleString()}</td>
-                        <td className="px-6 py-4 text-sm text-gray-600">{customer.joinDate}</td>
+                        <td className="px-3 md:px-6 py-4 text-gray-900 font-semibold">{customer.name}</td>
+                        <td className="hidden sm:table-cell px-3 md:px-6 py-4 text-gray-600">{customer.email}</td>
+                        <td className="hidden md:table-cell px-3 md:px-6 py-4 text-gray-600">{customer.phone}</td>
+                        <td className="px-3 md:px-6 py-4 text-gray-600 font-medium text-center">{customer.totalOrders}</td>
+                        <td className="px-3 md:px-6 py-4 text-gray-900 font-semibold">₹{customer.totalSpent.toLocaleString()}</td>
+                        <td className="hidden sm:table-cell px-3 md:px-6 py-4 text-gray-600">{customer.joinDate}</td>
                       </tr>
                     ))}
                   </tbody>

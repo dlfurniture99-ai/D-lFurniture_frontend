@@ -10,13 +10,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* About */}
           <div>
-            <h5 className="text-white font-bold mb-4">About D&L Furnitech</h5>
+            <h5 className="text-white font-bold mb-4">About The Wooden Space</h5>
             <p className="text-sm leading-relaxed mb-4">
-              D&L Furnitech brings you premium, solid wood furniture that
+              The Wooden Space brings you premium, solid wood furniture that
               combines tradition with contemporary design.
             </p>
             <p className="text-xs text-gray-400">
-             © 2024 D&L Furnitech. All rights reserved.
+             © 2024 The Wooden Space. All rights reserved.
             </p>
           </div>
 
@@ -125,7 +125,7 @@ export default function Footer() {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400 mb-6">
             <p className="flex items-center justify-center gap-1">
-              D&L Furnitech © 2024. All rights reserved. | Handcrafted
+              The Wooden Space © 2024. All rights reserved. | Handcrafted
               with <FaHeart size={14} className="text-red-500" /> in India
             </p>
             <div className="flex flex-wrap gap-6 justify-center md:justify-end">

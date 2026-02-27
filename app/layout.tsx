@@ -51,16 +51,16 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "D&L Furnitech - Buy Premium Solid Wood Furniture Online in India",
+  title: "The Wooden Space - Buy Premium Solid Wood Furniture Online in India",
   description: siteConfig.description,
   keywords: siteConfig.keywords,
-  authors: [{ name: "D&L Furnitech" }],
-  creator: "D&L Furnitech",
-  publisher: "D&L Furnitech",
+  authors: [{ name: "The Wooden Space" }],
+  creator: "The Wooden Space",
+  publisher: "The Wooden Space",
   robots: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
   icons: {
     icon: "/favicon.ico",
-    apple: "/logo.jpg",
+    apple: "/woodenspace.png",
     shortcut: "/favicon.ico",
   },
   openGraph: {
@@ -68,14 +68,14 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: siteConfig.siteUrl,
     siteName: siteConfig.name,
-    title: "D&L Furnitech - Premium Solid Wood Furniture Online",
+    title: "The Wooden Space - Premium Solid Wood Furniture Online",
     description: siteConfig.description,
     images: [
       {
         url: `${siteConfig.siteUrl}/og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: "D&L Furnitech - Premium Wooden Furniture",
+        alt: "The Wooden Space - Premium Wooden Furniture",
         type: "image/jpeg",
         secureUrl: `${siteConfig.siteUrl}/og-image.jpg`,
       },
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
         url: `${siteConfig.siteUrl}/hero.png`,
         width: 1200,
         height: 600,
-        alt: "D&L Furnitech - Premium Wooden Furniture",
+        alt: "The Wooden Space - Premium Wooden Furniture",
         type: "image/png",
       },
     ],
@@ -92,7 +92,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: siteConfig.socialMedia.twitter,
     creator: siteConfig.socialMedia.twitter,
-    title: "D&L Furnitech - Premium Wooden Furniture Online",
+    title: "The Wooden Space - Premium Wooden Furniture Online",
     description: siteConfig.description,
     images: [`${siteConfig.siteUrl}/og-image.jpg`, `${siteConfig.siteUrl}/hero.png`],
   },
@@ -112,7 +112,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "D&L Furnitech",
+    title: "The Wooden Space",
   },
 };
 
@@ -137,7 +137,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="D&L Furnitech" />
+        <meta name="apple-mobile-web-app-title" content="The Wooden Space" />
         <meta name="msapplication-TileColor" content="#D4AF37" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta charSet="utf-8" />

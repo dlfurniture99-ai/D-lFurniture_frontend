@@ -188,7 +188,7 @@ export default function CheckoutPage() {
           order_id: orderResponse.data.orderId,
           name: 'D&L Furnitech',
           description: `Order for ${cartItems.length} item(s)`,
-          image: '/logo.jpg',
+          image: '/woodenspace.png',
           handler: async (response: any) => {
             try {
               // Verify payment on backend

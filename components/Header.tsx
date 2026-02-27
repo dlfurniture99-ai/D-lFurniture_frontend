@@ -131,9 +131,9 @@ export default function Header() {
         <div className="flex items-center justify-between gap-4 md:gap-8">
           {/* Logo Section */}
           <Link href="/" onClick={closeMenus} className="flex items-center gap-2 flex-shrink-0 hover:opacity-80 transition">
-            <div className="relative w-20 h-16">
+            <div className="relative w-20 h-20">
               <Image
-                src="/logo.jpg"
+                src="/woodenspace.png"
                 alt="D&L Logo"
                 width={200}
                 height={200}

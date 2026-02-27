@@ -8,7 +8,7 @@ export default function Testimonials() {
       name: 'Rajesh Kumar',
       city: 'Mumbai',
       rating: 5,
-      text: 'Amazing quality furniture! My entire living room is from D&L Furnitech. Highly recommended!',
+      text: 'Amazing quality furniture! My entire living room is from The Wooden Space. Highly recommended!',
       icon: FaUser,
     },
     {
