@@ -1,8 +1,9 @@
 'use client';
 
+import { FiTool as GiToolbox, FiGlobe as GiEarthAmerica, FiHeart as FaHeartFA } from 'react-icons/fi';
 import Image from 'next/image';
-import { GiToolbox, GiEarthAmerica } from 'react-icons/gi';
-import { FaHeart as FaHeartFA } from 'react-icons/fa';
+
+
 
 
 export default function AboutPage() {

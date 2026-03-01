@@ -1,9 +1,10 @@
 'use client';
 
+import { FiCheckCircle as FaCheckCircle, FiBox as FaBox, FiPhone as FaPhone, FiMapPin as FaMapMarkerAlt, FiCalendar as FaCalendarAlt } from 'react-icons/fi';
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { FaCheckCircle, FaBox, FaPhone, FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
+
 
 function OrderConfirmationContent() {
   const searchParams = useSearchParams();

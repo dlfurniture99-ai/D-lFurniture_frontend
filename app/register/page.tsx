@@ -1,9 +1,10 @@
 'use client';
 
+import { FiEye as FaEye, FiEyeOff as FaEyeSlash, FiCheckCircle as FaCheckCircle } from 'react-icons/fi';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FaEye, FaEyeSlash, FaCheckCircle } from 'react-icons/fa';
+
 import { Toaster, toast } from 'sonner';
 import { GoogleLogin } from '@react-oauth/google';
 import * as THREE from 'three';

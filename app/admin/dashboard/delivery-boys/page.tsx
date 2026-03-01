@@ -1,7 +1,8 @@
 'use client';
 
+import { FiPlus as FaPlus, FiTrash2 as FaTrash, FiCheck as FaCheck, FiX as FaTimes, FiUser as FaUser, FiPhone as FaPhone, FiMail as FaEnvelope } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
-import { FaPlus, FaTrash, FaCheck, FaTimes, FaUser, FaPhone, FaEnvelope } from 'react-icons/fa';
+
 import { toast } from 'sonner';
 import AdminSidebar from '@/components/AdminSidebar';
 import AdminTopNav from '@/components/AdminTopNav';
@@ -18,7 +19,7 @@ interface DeliveryBoy {
 }
 
 export default function DeliveryBoysPage() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [deliveryBoys, setDeliveryBoys] = useState<DeliveryBoy[]>([]);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -128,7 +129,7 @@ export default function DeliveryBoysPage() {
     <div className="flex h-screen bg-gray-100">
       <AdminSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
-      <div className="flex-1 flex flex-col" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }}>
+      <div className="flex min-h-screen flex-1 flex-col md:ml-64">
         <AdminTopNav onMenuToggle={() => setSidebarOpen(!sidebarOpen)} title="Delivery Boys Management" />
 
         <div className="flex-1 overflow-auto">
@@ -294,3 +295,4 @@ export default function DeliveryBoysPage() {
     </div>
   );
 }
+

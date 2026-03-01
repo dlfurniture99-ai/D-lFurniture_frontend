@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import AdminSidebar from '@/components/AdminSidebar';
 import AdminTopNav from '@/components/AdminTopNav';
+import { adminApi } from '@/app/apis/adminApi';
 
 interface Customer {
   _id: string;
@@ -19,7 +21,7 @@ export default function CustomersPage() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const adminToken = localStorage.getItem('adminToken');
@@ -31,15 +33,36 @@ export default function CustomersPage() {
 
   const fetchCustomers = async () => {
     try {
-      setCustomers([
-        { _id: '1', name: 'John Doe', email: 'john@example.com', phone: '9876543210', totalOrders: 5, totalSpent: 125000, joinDate: '2023-01-15' },
-        { _id: '2', name: 'Jane Smith', email: 'jane@example.com', phone: '9876543211', totalOrders: 3, totalSpent: 75000, joinDate: '2023-06-20' },
-        { _id: '3', name: 'Mike Johnson', email: 'mike@example.com', phone: '9876543212', totalOrders: 8, totalSpent: 250000, joinDate: '2022-12-10' },
-        { _id: '4', name: 'Sarah Williams', email: 'sarah@example.com', phone: '9876543213', totalOrders: 2, totalSpent: 45000, joinDate: '2024-01-05' },
-        { _id: '5', name: 'Robert Brown', email: 'robert@example.com', phone: '9876543214', totalOrders: 6, totalSpent: 180000, joinDate: '2023-03-22' }
-      ]);
-    } catch (error) {
+      setLoading(true);
+      const response = await adminApi.customers.getAll();
+      console.log('Customers response:', response);
+      
+      if (response.success) {
+        const customersData = response.users || response.data || response.customers || [];
+        
+        // Transform user data to customer format
+        const transformedCustomers = customersData.map((user: any) => ({
+          _id: user._id,
+          name: user.name || 'Unknown',
+          email: user.email || '',
+          phone: user.phone || 'N/A',
+          totalOrders: user.totalOrders || 0,
+          totalSpent: user.totalSpent || 0,
+          joinDate: user.joinDate ? new Date(user.joinDate).toLocaleDateString() : 'N/A'
+        }));
+        
+        setCustomers(transformedCustomers);
+        if (transformedCustomers.length === 0) {
+          toast.info('No customers found');
+        }
+      } else {
+        toast.error('Failed to fetch customers');
+        setCustomers([]);
+      }
+    } catch (error: any) {
       console.error('Failed to fetch customers:', error);
+      toast.error('Failed to load customers');
+      setCustomers([]);
     } finally {
       setLoading(false);
     }
@@ -49,14 +72,26 @@ export default function CustomersPage() {
     <div className="flex h-screen bg-gray-100">
       <AdminSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       
-      <div className="flex-1 flex flex-col" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }}>
+      <div className="flex min-h-screen flex-1 flex-col md:ml-64">
         <AdminTopNav onMenuToggle={() => setSidebarOpen(!sidebarOpen)} title="Customers" />
 
         <div className="flex-1 overflow-auto">
           <div className="p-4 md:p-6 lg:p-8">
+            {loading ? (
+              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8 flex items-center justify-center min-h-96">
+                <div className="text-center">
+                  <div className="animate-spin h-8 w-8 border-4 border-gray-300 border-t-yellow-600 rounded-full mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading customers...</p>
+                </div>
+              </div>
+            ) : customers.length === 0 ? (
+              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8 text-center">
+                <p className="text-gray-600">No customers found</p>
+              </div>
+            ) : (
             <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
               <div className="p-4 md:p-6 border-b border-gray-200">
-                <h2 className="text-lg md:text-xl font-bold text-gray-900">All Customers</h2>
+                <h2 className="text-lg md:text-xl font-bold text-gray-900">All Customers ({customers.length})</h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs md:text-sm">
@@ -85,9 +120,11 @@ export default function CustomersPage() {
                 </table>
               </div>
             </div>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 }
+

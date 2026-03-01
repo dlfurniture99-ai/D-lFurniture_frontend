@@ -1,10 +1,11 @@
 'use client';
 
+import { FiShoppingCart as FaShoppingCart, FiUser as FaUser, FiMenu as FaBars, FiX as FaTimes, FiHeart as FaHeart, FiBox as FaBox } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { FaShoppingCart, FaUser, FaBars, FaTimes, FaHeart, FaBox } from 'react-icons/fa';
+
 
 export default function Navigation() {
   const [user, setUser] = useState<any>(null);

@@ -1,7 +1,8 @@
 'use client';
 
+import { FiChevronDown as FaChevronDown } from 'react-icons/fi';
 import { useState } from 'react';
-import { FaChevronDown } from 'react-icons/fa';
+
 
 export default function FAQ() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);

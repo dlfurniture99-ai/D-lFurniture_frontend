@@ -1,8 +1,10 @@
 'use client';
 
+import { FiSearch as FaSearch, FiTruck as FaTruck, FiArrowRight as FaArrowRight, FiHome as FaHome, FiLogOut as FaSignOutAlt } from 'react-icons/fi';
+import { HiOutlineQrCode as FaQrcode } from 'react-icons/hi2';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaSearch, FaTruck, FaQrcode, FaArrowRight, FaHome, FaSignOutAlt } from 'react-icons/fa';
+
 import { toast } from 'sonner';
 
 interface BookingData {

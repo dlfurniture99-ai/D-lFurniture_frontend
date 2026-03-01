@@ -1,8 +1,10 @@
 'use client';
 
+import { FiPhone as FaPhone, FiMail as FaEnvelope, FiMapPin as FaMapMarkerAlt, FiClock as FaClock } from 'react-icons/fi';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
+import { contactInfo } from '@/lib/contactConfig';
+
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -62,8 +64,10 @@ export default function ContactUs() {
               <FaPhone className="text-yellow-600 text-2xl" />
               <h3 className="text-lg font-bold">Call Us</h3>
             </div>
-            <p className="text-gray-700">+91-XXXX-XXXX-XXXX</p>
-            <p className="text-sm text-gray-600 mt-2">Monday - Friday, 10 AM - 6 PM IST</p>
+            <a href={`tel:${contactInfo.phone}`} className="text-gray-700 hover:text-yellow-600 font-semibold">
+              {contactInfo.phone}
+            </a>
+            <p className="text-sm text-gray-600 mt-2">{contactInfo.businessHours}</p>
           </div>
 
           <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
@@ -71,7 +75,9 @@ export default function ContactUs() {
               <FaEnvelope className="text-yellow-600 text-2xl" />
               <h3 className="text-lg font-bold">Email Us</h3>
             </div>
-            <p className="text-gray-700">support@dandlfurnitech.com</p>
+            <a href={`mailto:${contactInfo.email}`} className="text-gray-700 hover:text-yellow-600 font-semibold">
+              {contactInfo.email}
+            </a>
             <p className="text-sm text-gray-600 mt-2">We'll respond within 24 hours</p>
           </div>
 
@@ -80,8 +86,8 @@ export default function ContactUs() {
               <FaMapMarkerAlt className="text-yellow-600 text-2xl" />
               <h3 className="text-lg font-bold">Visit Us</h3>
             </div>
-            <p className="text-gray-700">D&L Furnitech</p>
-            <p className="text-sm text-gray-600 mt-2">India</p>
+            <p className="text-gray-700 font-semibold">The Wooden Space</p>
+            <p className="text-sm text-gray-600 mt-2">{contactInfo.address}</p>
           </div>
         </div>
 

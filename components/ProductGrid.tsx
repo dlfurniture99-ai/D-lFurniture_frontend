@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Product } from '@/lib/mockData';
 import ProductCard from './ProductCard';
+import './animations.css';
 
 interface ProductGridProps {
   products: Product[];
@@ -57,9 +58,11 @@ export default function ProductGrid({ products }: ProductGridProps) {
       </div>
 
       {/* Product Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedProducts.map((product) => (
-          <ProductCard key={product._id || product.id} product={product} />
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sortedProducts.map((product, index) => (
+          <div key={product._id || product.id} style={{ animationDelay: `${index * 0.1}s` }}>
+            <ProductCard product={product} />
+          </div>
         ))}
       </div>
     </div>

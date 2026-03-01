@@ -1,7 +1,8 @@
 'use client';
 
+import { FiBox as FaBox, FiCalendar as FaCalendar, FiTruck as FaTruck, FiCheckCircle as FaCheckCircle } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
-import { FaBox, FaCalendar, FaTruck, FaCheckCircle } from 'react-icons/fa';
+
 
 interface Booking {
   _id: string;

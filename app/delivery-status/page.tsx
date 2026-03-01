@@ -1,7 +1,8 @@
 'use client';
 
+import { FiSearch as FaSearch, FiTruck as FaTruck, FiCheckCircle as FaCheckCircle, FiClock as FaClock, FiPhone as FaPhone, FiUser as FaUser } from 'react-icons/fi';
 import { useState } from 'react';
-import { FaSearch, FaTruck, FaCheckCircle, FaClock, FaPhone, FaUser } from 'react-icons/fa';
+
 import { toast } from 'sonner';
 
 interface DeliveryStatus {

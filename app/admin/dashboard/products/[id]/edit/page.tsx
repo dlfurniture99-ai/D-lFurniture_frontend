@@ -1,8 +1,9 @@
 'use client';
 
+import { FiArrowLeft as FaArrowLeft, FiCheckCircle as FaCheckCircle, FiPlus as FaPlus, FiTrash2 as FaTrash, FiImage as FaImage, FiX as FaTimes } from 'react-icons/fi';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { FaArrowLeft, FaCheckCircle, FaPlus, FaTrash, FaImage, FaTimes } from 'react-icons/fa';
+
 import { toast } from 'sonner';
 import AdminSidebar from '@/components/AdminSidebar';
 import AdminTopNav from '@/components/AdminTopNav';
@@ -47,9 +48,9 @@ export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
   const productId = params.id as string;
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [pageLoading, setPageLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState('basic');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -335,7 +336,7 @@ export default function EditProductPage() {
     return (
       <div className="flex h-screen bg-gray-100">
         <AdminSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
-        <div className="flex-1 flex flex-col" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }}>
+        <div className="flex min-h-screen flex-1 flex-col md:ml-64">
           <AdminTopNav onMenuToggle={() => setSidebarOpen(!sidebarOpen)} title="Edit Product" />
           <div className="flex-1 flex items-center justify-center">
             <div className="animate-spin">
@@ -351,7 +352,7 @@ export default function EditProductPage() {
     <div className="flex h-screen bg-gray-100">
       <AdminSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       
-      <div className="flex-1 flex flex-col" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }}>
+      <div className="flex min-h-screen flex-1 flex-col md:ml-64">
         <AdminTopNav onMenuToggle={() => setSidebarOpen(!sidebarOpen)} title="Edit Product" />
 
         <div className="flex-1 overflow-auto">

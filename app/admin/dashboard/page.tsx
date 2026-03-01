@@ -1,8 +1,9 @@
 'use client';
 
+import { FiShoppingCart as FaShoppingCart, FiBox as FaBox, FiTrendingUp as FaChartLine, FiBarChart2 as FaChartBar } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaShoppingCart, FaBox, FaChartLine, FaChartBar } from 'react-icons/fa';
+
 import { toast } from 'sonner';
 import AdminSidebar from '@/components/AdminSidebar';
 import AdminTopNav from '@/components/AdminTopNav';
@@ -26,7 +27,7 @@ export default function AdminOverview() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [stats, setStats] = useState<BookingStat>({ total: 0, completed: 0, pending: 0, revenue: 0 });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Check admin token
@@ -67,7 +68,7 @@ export default function AdminOverview() {
     <div className="flex h-screen bg-gray-100">
       <AdminSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       
-      <div className="flex-1 flex flex-col" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }}>
+      <div className="flex min-h-screen flex-1 flex-col md:ml-64">
         <AdminTopNav onMenuToggle={() => setSidebarOpen(!sidebarOpen)} title="Dashboard" />
 
         <div className="flex-1 overflow-auto">
@@ -153,3 +154,4 @@ export default function AdminOverview() {
     </div>
   );
 }
+

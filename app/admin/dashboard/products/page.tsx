@@ -1,8 +1,9 @@
 'use client';
 
+import { FiEye as FaEye, FiEyeOff as FaEyeSlash, FiEdit2 as FaEdit, FiTrash2 as FaTrash, FiPlus as FaPlus } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaEye, FaEyeSlash, FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+
 import { toast } from 'sonner';
 import AdminSidebar from '@/components/AdminSidebar';
 import AdminTopNav from '@/components/AdminTopNav';
@@ -23,7 +24,7 @@ export default function ProductsPage() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const adminToken = localStorage.getItem('adminToken');
@@ -86,7 +87,7 @@ export default function ProductsPage() {
     <div className="flex h-screen bg-gray-100">
       <AdminSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       
-      <div className="flex-1 flex flex-col" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }}>
+      <div className="flex min-h-screen flex-1 flex-col md:ml-64">
         <AdminTopNav onMenuToggle={() => setSidebarOpen(!sidebarOpen)} title="Products" />
 
         <div className="flex-1 overflow-auto">
@@ -191,3 +192,4 @@ export default function ProductsPage() {
     </div>
   );
 }
+

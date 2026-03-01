@@ -1,9 +1,10 @@
 'use client';
 
+import { FiHeart as FaHeart, FiArrowLeft as FaArrowLeft, FiStar as FaStar, FiShoppingCart as FaShoppingCart, FiTrash2 as FaTrash } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FaHeart, FaArrowLeft, FaStar, FaShoppingCart, FaTrash } from 'react-icons/fa';
+
 
 interface FavoriteProduct {
   _id: string;

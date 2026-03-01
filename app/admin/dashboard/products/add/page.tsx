@@ -1,8 +1,9 @@
 'use client';
 
+import { FiArrowLeft as FaArrowLeft, FiCheckCircle as FaCheckCircle, FiPlus as FaPlus, FiTrash2 as FaTrash, FiImage as FaImage, FiX as FaTimes } from 'react-icons/fi';
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaArrowLeft, FaCheckCircle, FaPlus, FaTrash, FaImage, FaTimes } from 'react-icons/fa';
+
 import { toast } from 'sonner';
 import AdminSidebar from '@/components/AdminSidebar';
 import AdminTopNav from '@/components/AdminTopNav';
@@ -45,7 +46,7 @@ const DEFAULT_CATEGORIES = [
 
 export default function AddProductPage() {
   const router = useRouter();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState('basic'); // basic, images, details, variants
@@ -278,11 +279,11 @@ export default function AddProductPage() {
     <div className="flex h-screen bg-gray-100">
       <AdminSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
-      <div className="flex-1 flex flex-col" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }}>
+      <div className="flex min-h-screen flex-1 flex-col md:ml-64">
         <AdminTopNav onMenuToggle={() => setSidebarOpen(!sidebarOpen)} title="Add New Product" />
 
         <div className="flex-1 overflow-auto">
-          <div className="p-8 max-w-6xl mx-auto">
+          <div className="p-4 md:p-8 max-w-6xl mx-auto w-full">
             {/* Back Button */}
             <button
               onClick={() => router.back()}
@@ -293,25 +294,25 @@ export default function AddProductPage() {
             </button>
 
             {/* Header */}
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-black mb-2">Add New Product</h1>
-              <p className="text-black">Create a comprehensive product listing with images, details, and variants</p>
+            <div className="mb-6 md:mb-8">
+              <h1 className="text-2xl md:text-3xl font-bold text-black mb-2">Add New Product</h1>
+              <p className="text-sm md:text-base text-black">Create a comprehensive product listing with images, details, and variants</p>
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-4 mb-8 border-b border-gray-200">
+            <div className="flex gap-1 md:gap-4 mb-6 md:mb-8 border-b border-gray-200 overflow-x-auto scrollbar-hide">
               {tabs.map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 font-medium text-sm transition border-b-2 ${
+                  className={`px-2 md:px-6 py-2 md:py-3 font-medium text-xs md:text-sm transition border-b-2 whitespace-nowrap flex items-center gap-1 ${
                     activeTab === tab.id
                       ? 'border-yellow-600 text-black'
-                      : 'border-transparent text-black hover:text-black'
+                      : 'border-transparent text-gray-600 hover:text-black'
                   }`}
                 >
-                  <span className="mr-2">{tab.icon}</span>
-                  {tab.label}
+                  <span className="hidden sm:inline text-sm md:text-base">{tab.icon}</span>
+                  <span className="text-xs sm:text-sm md:text-base">{tab.label.split(' ')[0]}</span>
                 </button>
               ))}
             </div>
@@ -319,11 +320,11 @@ export default function AddProductPage() {
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* BASIC INFO TAB */}
               {activeTab === 'basic' && (
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-3 md:p-8 space-y-4 md:space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     {/* Product Name */}
                     <div className="md:col-span-2">
-                      <label htmlFor="name" className="block text-sm font-semibold text-black mb-2">
+                      <label htmlFor="name" className="block text-xs sm:text-sm font-semibold text-black mb-1 md:mb-2">
                         Product Name * <span className="text-xs text-black">(Required)</span>
                       </label>
                       <input
@@ -332,9 +333,9 @@ export default function AddProductPage() {
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        placeholder="e.g., Premium Wireless Headphones with Noise Cancellation"
+                        placeholder="e.g., Premium Wireless Headphones"
                         maxLength={100}
-                        className={`w-full px-4 py-3 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
+                        className={`w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg text-sm md:text-base text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
                           errors.name ? 'border-red-500' : 'border-gray-300'
                         }`}
                       />
@@ -346,7 +347,7 @@ export default function AddProductPage() {
 
                     {/* Brand */}
                     <div>
-                      <label htmlFor="brand" className="block text-sm font-semibold text-black mb-2">
+                      <label htmlFor="brand" className="block text-xs sm:text-sm font-semibold text-black mb-1 md:mb-2">
                         Brand Name *
                       </label>
                       <input
@@ -356,7 +357,7 @@ export default function AddProductPage() {
                         value={formData.brand}
                         onChange={handleInputChange}
                         placeholder="e.g., Sony, Samsung"
-                        className={`w-full px-4 py-3 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
+                        className={`w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg text-sm md:text-base text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
                           errors.brand ? 'border-red-500' : 'border-gray-300'
                         }`}
                       />
@@ -365,7 +366,7 @@ export default function AddProductPage() {
 
                     {/* SKU */}
                     <div>
-                      <label htmlFor="sku" className="block text-sm font-semibold text-black mb-2">
+                      <label htmlFor="sku" className="block text-xs sm:text-sm font-semibold text-black mb-1 md:mb-2">
                         SKU (Stock Keeping Unit) *
                       </label>
                       <input
@@ -374,8 +375,8 @@ export default function AddProductPage() {
                         name="sku"
                         value={formData.sku}
                         onChange={handleInputChange}
-                        placeholder="e.g., PROD-001-BLK"
-                        className={`w-full px-4 py-3 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
+                        placeholder="e.g., PROD-001"
+                        className={`w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg text-sm md:text-base text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
                           errors.sku ? 'border-red-500' : 'border-gray-300'
                         }`}
                       />
@@ -384,18 +385,18 @@ export default function AddProductPage() {
 
                     {/* Short Description */}
                     <div className="md:col-span-2">
-                      <label htmlFor="shortDescription" className="block text-sm font-semibold text-black mb-2">
-                        Short Description * <span className="text-xs text-black">(Max 160 chars - for listings)</span>
+                      <label htmlFor="shortDescription" className="block text-xs sm:text-sm font-semibold text-black mb-1 md:mb-2">
+                        Short Description * <span className="text-xs text-black">(Max 160)</span>
                       </label>
                       <textarea
                         id="shortDescription"
                         name="shortDescription"
                         value={formData.shortDescription}
                         onChange={handleInputChange}
-                        placeholder="Brief product description that appears in search results..."
+                        placeholder="Brief product description..."
                         maxLength={160}
                         rows={2}
-                        className={`w-full px-4 py-3 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition resize-none ${
+                        className={`w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg text-sm md:text-base text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition resize-none ${
                           errors.shortDescription ? 'border-red-500' : 'border-gray-300'
                         }`}
                       />
@@ -407,7 +408,7 @@ export default function AddProductPage() {
 
                     {/* Full Description */}
                     <div className="md:col-span-2">
-                      <label htmlFor="fullDescription" className="block text-sm font-semibold text-black mb-2">
+                      <label htmlFor="fullDescription" className="block text-xs sm:text-sm font-semibold text-black mb-1 md:mb-2">
                         Full Description *
                       </label>
                       <textarea
@@ -415,24 +416,24 @@ export default function AddProductPage() {
                         name="fullDescription"
                         value={formData.fullDescription}
                         onChange={handleInputChange}
-                        placeholder="Detailed product description including features, benefits, usage instructions..."
-                        rows={5}
-                        className={`w-full px-4 py-3 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition resize-none ${
+                        placeholder="Detailed product description..."
+                        rows={4}
+                        className={`w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg text-sm md:text-base text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition resize-none ${
                           errors.fullDescription ? 'border-red-500' : 'border-gray-300'}`}/>
-                      {errors.fullDescription && <p className="text-red-600 text-sm mt-1">{errors.fullDescription}</p>}
+                      {errors.fullDescription && <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.fullDescription}</p>}
                     </div>
 
                     {/* Category */}
                     <div className="md:col-span-2">
-                      <div className="flex justify-between items-center mb-2">
-                        <label htmlFor="category" className="block text-sm font-semibold text-black">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-1 md:mb-2">
+                        <label htmlFor="category" className="block text-xs sm:text-sm font-semibold text-black">
                           Category *
                         </label>
                         <button
                           type="button"
                           onClick={() => setShowCategoryModal(true)}
-                          className="text-xs bg-yellow-100 text-black px-3 py-1 rounded hover:bg-yellow-200 transition">
-                          + Add Custom Category
+                          className="text-xs bg-yellow-100 text-black px-2 md:px-3 py-1 rounded hover:bg-yellow-200 transition whitespace-nowrap">
+                          + Add Category
                         </button>
                       </div>
                       <select
@@ -440,7 +441,7 @@ export default function AddProductPage() {
                         name="category"
                         value={formData.category}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
+                        className={`w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg text-sm md:text-base text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
                           errors.category ? 'border-red-500' : 'border-gray-300'
                         }`}
                       >
@@ -454,7 +455,7 @@ export default function AddProductPage() {
 
                     {/* Price Row */}
                     <div>
-                      <label htmlFor="price" className="block text-sm font-semibold text-black mb-2">
+                      <label htmlFor="price" className="block text-xs sm:text-sm font-semibold text-black mb-1 md:mb-2">
                         Original Price (₹) *
                       </label>
                       <input
@@ -466,17 +467,17 @@ export default function AddProductPage() {
                         placeholder="0.00"
                         step="0.01"
                         min="0"
-                        className={`w-full px-4 py-3 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
+                        className={`w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg text-sm md:text-base text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
                           errors.price ? 'border-red-500' : 'border-gray-300'
                         }`}
                       />
-                      {errors.price && <p className="text-red-600 text-sm mt-1">{errors.price}</p>}
+                      {errors.price && <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.price}</p>}
                     </div>
 
                     {/* Discount */}
                     <div>
-                      <label htmlFor="discountPercentage" className="block text-sm font-semibold text-black mb-2">
-                        Discount (%) <span className="text-xs text-black">(Optional)</span>
+                      <label htmlFor="discountPercentage" className="block text-xs sm:text-sm font-semibold text-black mb-1 md:mb-2">
+                        Discount (%) <span className="text-xs text-black">(Opt)</span>
                       </label>
                       <input
                         type="number"
@@ -488,7 +489,7 @@ export default function AddProductPage() {
                         step="0.1"
                         min="0"
                         max="100"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition"
+                        className="w-full px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg text-sm md:text-base text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition"
                       />
                     </div>
 
@@ -507,7 +508,7 @@ export default function AddProductPage() {
 
                     {/* Stock */}
                     <div>
-                      <label htmlFor="stock" className="block text-sm font-semibold text-black mb-2">
+                      <label htmlFor="stock" className="block text-xs sm:text-sm font-semibold text-black mb-1 md:mb-2">
                         Stock Quantity *
                       </label>
                       <input
@@ -518,11 +519,11 @@ export default function AddProductPage() {
                         onChange={handleInputChange}
                         placeholder="0"
                         min="0"
-                        className={`w-full px-4 py-3 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
+                        className={`w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg text-sm md:text-base text-black focus:outline-none focus:ring-2 focus:ring-yellow-600 transition ${
                           errors.stock ? 'border-red-500' : 'border-gray-300'
                         }`}
                       />
-                      {errors.stock && <p className="text-red-600 text-sm mt-1">{errors.stock}</p>}
+                      {errors.stock && <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.stock}</p>}
                     </div>
                   </div>
                 </div>
@@ -530,7 +531,7 @@ export default function AddProductPage() {
 
               {/* IMAGES TAB */}
               {activeTab === 'images' && (
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8">
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-black mb-4">Product Images *</h3>
                     <p className="text-sm text-black mb-4">Upload high-quality product images. First image will be used as the main image.</p>
@@ -592,7 +593,7 @@ export default function AddProductPage() {
 
               {/* DETAILS TAB */}
               {activeTab === 'details' && (
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8 space-y-6">
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8 space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Weight */}
                     <div>
@@ -695,25 +696,25 @@ export default function AddProductPage() {
 
                     <div className="space-y-3">
                        {formData.specifications.map((spec, index) => (
-                         <div key={index} className="flex gap-3 items-end">
+                         <div key={index} className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-end">
                            <input
                              type="text"
                              placeholder="e.g., Seat Height, Capacity, Legs Type"
                              value={spec.key}
                              onChange={(e) => updateSpecification(index, e.target.value, spec.value)}
-                             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                             className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-black text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-600"
                            />
                            <input
                              type="text"
                              placeholder="e.g., 18 inches, 300 lbs, Metal"
                              value={spec.value}
                              onChange={(e) => updateSpecification(index, spec.key, e.target.value)}
-                             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                             className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-black text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-600"
                            />
                           <button
                             type="button"
                             onClick={() => removeSpecification(index)}
-                            className="p-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg transition"
+                            className="p-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg transition self-end sm:self-auto"
                           >
                             <FaTrash className="w-4 h-4" />
                           </button>
@@ -730,16 +731,16 @@ export default function AddProductPage() {
 
               {/* VARIANTS TAB */}
               {activeTab === 'variants' && (
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8 space-y-6">
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8 space-y-6">
                   {/* Available Colors */}
                   <div>
                     <h4 className="text-lg font-semibold text-black mb-4">Available Colors</h4>
-                    <div className="flex gap-2 mb-4">
+                    <div className="flex flex-col sm:flex-row gap-2 mb-4">
                       <input
                         type="text"
                         id="colorInput"
                         placeholder="e.g., Black, White, Gray, Brown"
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                        className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-black text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-600"
                       />
                       <button
                         type="button"
@@ -750,7 +751,7 @@ export default function AddProductPage() {
                             input.value = '';
                           }
                         }}
-                        className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition font-medium"
+                        className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition font-medium text-sm sm:text-base"
                       >
                         Add Color
                       </button>
@@ -775,12 +776,12 @@ export default function AddProductPage() {
                   {/* Available Finishes */}
                   <div className="pt-6 border-t border-gray-200">
                     <h4 className="text-lg font-semibold text-black mb-4">Available Finishes</h4>
-                    <div className="flex gap-2 mb-4">
+                    <div className="flex flex-col sm:flex-row gap-2 mb-4">
                       <input
                         type="text"
                         id="sizeInput"
                         placeholder="e.g., Matte, Glossy, Walnut, Oak, Veneer"
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                        className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-black text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-600"
                       />
                       <button
                         type="button"
@@ -791,7 +792,7 @@ export default function AddProductPage() {
                             input.value = '';
                           }
                         }}
-                        className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition font-medium"
+                        className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition font-medium text-sm sm:text-base"
                       >
                         Add Finish
                       </button>
@@ -816,18 +817,18 @@ export default function AddProductPage() {
               )}
 
               {/* Form Actions */}
-              <div className="flex gap-4 pt-6">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-6">
                 <button
                   type="button"
                   onClick={() => router.back()}
-                  className="flex-1 px-4 py-3 border border-gray-300 text-black rounded-lg hover:bg-gray-50 font-medium transition"
+                  className="flex-1 px-4 py-2 md:py-3 border border-gray-300 text-black rounded-lg hover:bg-gray-50 font-medium transition text-sm md:text-base"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:bg-yellow-400 disabled:cursor-not-allowed font-medium transition"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 md:py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:bg-yellow-400 disabled:cursor-not-allowed font-medium transition text-sm md:text-base"
                 >
                   {loading ? (
                     <>
@@ -852,7 +853,7 @@ export default function AddProductPage() {
       {/* Category Modal */}
       {showCategoryModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+          <div className="bg-white rounded-lg shadow-lg p-4 md:p-8 max-w-md w-full mx-auto">
             <h3 className="text-xl font-bold text-black mb-4">Add Custom Category</h3>
             <input
               type="text"
@@ -884,3 +885,4 @@ export default function AddProductPage() {
     </div>
   );
 }
+

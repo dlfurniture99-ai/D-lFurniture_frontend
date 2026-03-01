@@ -51,6 +51,7 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.siteUrl),
   title: "The Wooden Space - Buy Premium Solid Wood Furniture Online in India",
   description: siteConfig.description,
   keywords: siteConfig.keywords,
@@ -59,25 +60,28 @@ export const metadata: Metadata = {
   publisher: "The Wooden Space",
   robots: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
   icons: {
-    icon: "/favicon.ico",
-    apple: "/woodenspace.png",
-    shortcut: "/favicon.ico",
+    icon: [
+      { url: "/logo.jpg", sizes: "any" },
+      { url: "/woodenspace.png", sizes: "180x180", type: "image/png" }
+    ],
+    apple: "/logo.jpg",
+    shortcut: "/logo.jpg",
   },
   openGraph: {
     type: "website",
     locale: "en_IN",
     url: siteConfig.siteUrl,
-    siteName: siteConfig.name,
-    title: "The Wooden Space - Premium Solid Wood Furniture Online",
+    siteName: "The Wooden Space",
+    title: "The Wooden Space - Premium Solid Wood Furniture Online in India",
     description: siteConfig.description,
     images: [
       {
-        url: `${siteConfig.siteUrl}/og-image.jpg`,
+        url: `${siteConfig.siteUrl}/woodenspace.png`,
         width: 1200,
         height: 630,
         alt: "The Wooden Space - Premium Wooden Furniture",
-        type: "image/jpeg",
-        secureUrl: `${siteConfig.siteUrl}/og-image.jpg`,
+        type: "image/png",
+        secureUrl: `${siteConfig.siteUrl}/woodenspace.png`,
       },
       {
         url: `${siteConfig.siteUrl}/hero.png`,
@@ -86,15 +90,22 @@ export const metadata: Metadata = {
         alt: "The Wooden Space - Premium Wooden Furniture",
         type: "image/png",
       },
+      {
+        url: `${siteConfig.siteUrl}/logo.jpg`,
+        width: 400,
+        height: 400,
+        alt: "The Wooden Space Logo",
+        type: "image/jpeg",
+      },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    site: siteConfig.socialMedia.twitter,
-    creator: siteConfig.socialMedia.twitter,
+    site: "@woodenspace",
+    creator: "@woodenspace",
     title: "The Wooden Space - Premium Wooden Furniture Online",
     description: siteConfig.description,
-    images: [`${siteConfig.siteUrl}/og-image.jpg`, `${siteConfig.siteUrl}/hero.png`],
+    images: [`${siteConfig.siteUrl}/woodenspace.png`, `${siteConfig.siteUrl}/hero.png`, `${siteConfig.siteUrl}/logo.jpg`],
   },
   alternates: {
     canonical: siteConfig.siteUrl,
@@ -124,14 +135,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Favicon */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/logo.jpg" sizes="180x180" />
+        {/* Favicon & Icons */}
+        <link rel="icon" href="/logo.jpg" sizes="any" />
+        <link rel="icon" type="image/png" href="/woodenspace.png" sizes="180x180" />
+        <link rel="apple-touch-icon" href="/logo.jpg" />
+        <link rel="shortcut icon" href="/logo.jpg" type="image/jpeg" />
         
         {/* Manifest */}
         <link rel="manifest" href="/site.webmanifest" />
-
+        
         {/* Additional Meta Tags */}
         <meta name="theme-color" content="#D4AF37" />
         <meta name="mobile-web-app-capable" content="yes" />

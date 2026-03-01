@@ -1,9 +1,10 @@
 'use client';
 
+import { FiStar as FaStar, FiShoppingCart as FaShoppingCart, FiFilter as FaFilter } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaStar, FaShoppingCart, FaFilter } from 'react-icons/fa';
+
 
 interface Product {
   _id: string;

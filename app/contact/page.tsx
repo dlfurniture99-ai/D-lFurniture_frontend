@@ -1,10 +1,11 @@
 'use client';
 
+import { FiPhone as FaPhone, FiMail as FaEnvelope, FiMapPin as FaMapMarkerAlt, FiMessageCircle as FaWhatsapp, FiX as FaTimes } from 'react-icons/fi';
 import { useState } from 'react';
 import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaWhatsapp, FaTimes } from 'react-icons/fa';
+
 
 export default function ContactPage() {
   const [showModal, setShowModal] = useState(false);

@@ -1,5 +1,6 @@
 export const siteConfig = {
   name: 'The Wooden Space',
+  title: 'The Wooden Space - Buy Premium Solid Wood Furniture Online in India',
   description: 'Buy Premium Solid Wood Furniture Online in India - The Wooden Space offers handcrafted wooden furniture, sofas, beds, dining tables, and more at affordable prices with free delivery.',
   keywords: [
     'wooden furniture online',
@@ -18,9 +19,9 @@ export const siteConfig = {
   ],
   siteUrl: 'https://dlfurnitures.com',
   socialMedia: {
-    twitter: '@DLFurnitures',
-    facebook: 'DLFurnitures',
-    instagram: '@DLFurnitures',
+    twitter: '@woodenspace',
+    facebook: 'thewoodenspace',
+    instagram: '@thewoodenspace',
   },
 };
 

@@ -1,5 +1,7 @@
 'use client';
 
+import { contactInfo } from '@/lib/contactConfig';
+
 export default function TermsConditions() {
   return (
     <div className="min-h-screen bg-white py-12 px-4">
@@ -84,8 +86,35 @@ export default function TermsConditions() {
               These terms and conditions are governed by and construed in accordance with the laws of India, and you irrevocably submit to the exclusive jurisdiction of the courts in that location.
             </p>
           </section>
-        </div>
-      </div>
-    </div>
-  );
-}
+
+          <section>
+            <h2 className="text-2xl font-bold mb-4">11. Contact Information</h2>
+            <p className="text-gray-700 mb-4">
+              For any questions about these Terms & Conditions, please contact us:
+            </p>
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-3">
+              <p className="text-gray-700">
+                <strong>Phone:</strong>{' '}
+                <a href={`tel:${contactInfo.phone}`} className="text-yellow-600 hover:text-yellow-700">
+                  {contactInfo.phone}
+                </a>
+              </p>
+              <p className="text-gray-700">
+                <strong>Email:</strong>{' '}
+                <a href={`mailto:${contactInfo.email}`} className="text-yellow-600 hover:text-yellow-700">
+                  {contactInfo.email}
+                </a>
+              </p>
+              <p className="text-gray-700">
+                <strong>Address:</strong> {contactInfo.address}
+              </p>
+              <p className="text-gray-700">
+                <strong>Business Hours:</strong> {contactInfo.businessHours}
+              </p>
+            </div>
+          </section>
+          </div>
+          </div>
+          </div>
+          );
+          }

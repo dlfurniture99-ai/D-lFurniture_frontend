@@ -1,9 +1,10 @@
 'use client';
 
+import { FiTruck as FaTruck, FiMail as FaEnvelope, FiArrowRight as FaArrowRight, FiHome as FaHome } from 'react-icons/fi';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FaTruck, FaEnvelope, FaArrowRight, FaHome } from 'react-icons/fa';
+
 import { toast } from 'sonner';
 
 export default function DeliveryLoginPage() {

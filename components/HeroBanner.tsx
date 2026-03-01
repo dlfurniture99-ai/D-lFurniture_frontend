@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import './animations.css';
 
 interface HeroBannerProps {
   onCategorySelect?: (category: string) => void;
@@ -89,10 +90,10 @@ export default function HeroBanner({ onCategorySelect }: HeroBannerProps) {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-6 md:mb-8">
-            <h1 className="text-lg md:text-2xl font-bold text-white mb-2 drop-shadow-lg">
+            <h1 className="text-lg md:text-3xl font-bold text-white mb-2 drop-shadow-lg animate-slideInDown">
               Welcome to The Wooden Space
             </h1>
-            <p className="text-xs sm:text-sm md:text-base text-gray-50 mb-4 font-semibold drop-shadow-md">
+            <p className="text-xs sm:text-sm md:text-base text-gray-50 mb-4 font-semibold drop-shadow-md animate-slideInUp" style={{ animationDelay: '0.2s' }}>
               Premium Solid Wood Furniture for Your Lifestyle
             </p>
           </div>
@@ -103,15 +104,16 @@ export default function HeroBanner({ onCategorySelect }: HeroBannerProps) {
               {loading ? (
                 <p className="text-white text-sm">Loading categories...</p>
               ) : categories.length > 0 ? (
-                categories.map((category) => (
+                categories.map((category, index) => (
                   <button
                     key={category}
                     onClick={() => handleCategoryClick(category)}
-                    className={`px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs sm:text-sm font-medium transition duration-300 whitespace-nowrap ${
+                    className={`px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs sm:text-sm font-medium transition duration-300 whitespace-nowrap animate-fadeInScale ${
                       selectedCategory === category
                         ? 'bg-yellow-600 text-white shadow-lg scale-105'
                         : 'bg-white/90 text-gray-900 hover:bg-white hover:shadow-md'
                     }`}
+                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     {category}
                   </button>

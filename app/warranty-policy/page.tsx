@@ -1,5 +1,7 @@
 'use client';
 
+import { contactInfo } from '@/lib/contactConfig';
+
 export default function WarrantyPolicy() {
   return (
     <div className="min-h-screen bg-white py-12 px-4">
@@ -110,11 +112,23 @@ export default function WarrantyPolicy() {
             <p className="text-gray-700 mb-4">
               For warranty claims or inquiries:
             </p>
-            <p className="text-gray-700">
-              Email: warranty@dandlfurnitech.com<br/>
-              Phone: +91-XXXX-XXXX-XXXX<br/>
-              Working Hours: Monday - Friday, 10 AM - 6 PM IST
-            </p>
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-3">
+              <p className="text-gray-700">
+                <strong>Phone:</strong>{' '}
+                <a href={`tel:${contactInfo.phone}`} className="text-yellow-600 hover:text-yellow-700">
+                  {contactInfo.phone}
+                </a>
+              </p>
+              <p className="text-gray-700">
+                <strong>Email:</strong>{' '}
+                <a href={`mailto:${contactInfo.email}`} className="text-yellow-600 hover:text-yellow-700">
+                  {contactInfo.email}
+                </a>
+              </p>
+              <p className="text-gray-700">
+                <strong>Business Hours:</strong> {contactInfo.businessHours}
+              </p>
+            </div>
           </section>
 
           <section>

@@ -1,7 +1,8 @@
 'use client';
 
-import { FaUser, FaFemale, FaStar } from 'react-icons/fa';
 
+
+import { FiUser as FaUser, FiUserCheck as FaFemale, FiStar as FaStar } from 'react-icons/fi';
 export default function Testimonials() {
   const testimonials = [
     {

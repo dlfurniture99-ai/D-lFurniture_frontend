@@ -1,7 +1,8 @@
 'use client';
 
-import { MdCheck, MdLocalShipping, MdAttachMoney, MdShield, MdPalette, MdSupportAgent } from 'react-icons/md';
 
+
+import { FiCheck as MdCheck, FiTruck as MdLocalShipping, FiDollarSign as MdAttachMoney, FiShield as MdShield, FiPenTool as MdPalette, FiHeadphones as MdSupportAgent } from 'react-icons/fi';
 export default function WhyChooseUs() {
   const reasons = [
     {

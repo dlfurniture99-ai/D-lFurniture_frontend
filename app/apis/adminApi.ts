@@ -35,7 +35,7 @@ export const adminApi = {
   bookings: {
     getAll: async () => {
       try {
-        const url = `${API_BASE_URL}/bookings/admin/all`;
+        const url = `${API_BASE_URL}/api/bookings/admin/all`;
         console.log('Fetching from:', url);
         return await fetchWithCookies(url, { method: 'GET' });
       } catch (error: any) {
@@ -45,7 +45,7 @@ export const adminApi = {
     },
     updateStatus: async (bookingId: string, status: string) => {
       try {
-        const url = `${API_BASE_URL}/bookings/${bookingId}/status`;
+        const url = `${API_BASE_URL}/api/bookings/${bookingId}/status`;
         return await fetchWithCookies(url, {
           method: 'PATCH',
           body: JSON.stringify({ status }),
@@ -57,7 +57,7 @@ export const adminApi = {
     },
     cancel: async (bookingId: string) => {
       try {
-        const url = `${API_BASE_URL}/bookings/${bookingId}/cancel`;
+        const url = `${API_BASE_URL}/api/bookings/${bookingId}/cancel`;
         return await fetchWithCookies(url, { method: 'PATCH' });
       } catch (error: any) {
         console.error('Failed to cancel booking:', error);
@@ -70,7 +70,7 @@ export const adminApi = {
   products: {
     getAll: async () => {
       try {
-        const url = `${API_BASE_URL}/products/admin/all`;
+        const url = `${API_BASE_URL}/api/products/admin/all`;
         const response = await fetchWithCookies(url, { method: 'GET' });
         
         // Transform response to match expected format (products -> data)
@@ -88,7 +88,7 @@ export const adminApi = {
     },
     getById: async (productId: string) => {
       try {
-        const url = `${API_BASE_URL}/products/${productId}`;
+        const url = `${API_BASE_URL}/api/products/${productId}`;
         const response = await fetchWithCookies(url, { method: 'GET' });
         
         // Transform response to match expected format (product -> data)
@@ -109,7 +109,7 @@ export const adminApi = {
     },
     create: async (productData: any) => {
       try {
-        const url = `${API_BASE_URL}/products`;
+        const url = `${API_BASE_URL}/api/products`;
         return await fetchWithCookies(url, {
           method: 'POST',
           body: JSON.stringify(productData),
@@ -121,7 +121,7 @@ export const adminApi = {
     },
     update: async (productId: string, productData: any) => {
       try {
-        const url = `${API_BASE_URL}/products/${productId}`;
+        const url = `${API_BASE_URL}/api/products/${productId}`;
         return await fetchWithCookies(url, {
           method: 'PUT',
           body: JSON.stringify(productData),
@@ -133,7 +133,7 @@ export const adminApi = {
     },
     delete: async (productId: string) => {
       try {
-        const url = `${API_BASE_URL}/products/${productId}`;
+        const url = `${API_BASE_URL}/api/products/${productId}`;
         return await fetchWithCookies(url, { method: 'DELETE' });
       } catch (error: any) {
         console.error('Failed to delete product:', error);
@@ -142,7 +142,7 @@ export const adminApi = {
     },
     toggleVisibility: async (productId: string, isVisible: boolean) => {
       try {
-        const url = `${API_BASE_URL}/products/${productId}/visibility`;
+        const url = `${API_BASE_URL}/api/products/${productId}/visibility`;
         return await fetchWithCookies(url, {
           method: 'PATCH',
           body: JSON.stringify({ isVisible }),
@@ -158,7 +158,7 @@ export const adminApi = {
   customers: {
     getAll: async () => {
       try {
-        const url = `${API_BASE_URL}/users`;
+        const url = `${API_BASE_URL}/api/admin/customers`;
         return await fetchWithCookies(url, { method: 'GET' });
       } catch (error: any) {
         console.error('Failed to fetch customers:', error);

@@ -1,9 +1,10 @@
 'use client';
 
+import { FiTruck as FaTruck, FiMail as FaEnvelope, FiCheckCircle as FaCheckCircle, FiArrowRight as FaArrowRight, FiShield as FaShieldAlt } from 'react-icons/fi';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FaTruck, FaEnvelope, FaCheckCircle, FaArrowRight, FaShieldAlt } from 'react-icons/fa';
+
 import { toast } from 'sonner';
 
 export default function DeliveryVerifyEmailPage() {

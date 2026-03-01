@@ -1,9 +1,10 @@
 'use client';
 
+import { FiMail as FaEnvelope, FiLock as FaLock, FiLoader as FaSpinner } from 'react-icons/fi';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { FaEnvelope, FaLock, FaSpinner } from 'react-icons/fa';
+
 import { adminAuthApi } from '@/app/apis/config';
 
 export default function AdminLogin() {

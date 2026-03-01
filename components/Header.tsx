@@ -1,11 +1,12 @@
 'use client';
 
+import { FiEdit2 as BiPencil, FiUser as BiUser, FiShoppingCart, FiHeart } from 'react-icons/fi';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cartStore } from '@/lib/cartStore';
 import { wishlistStore } from '@/lib/wishlistStore';
-import { BiPencil, BiUser } from 'react-icons/bi';
+
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -125,19 +126,20 @@ export default function Header() {
   }, [userMenuOpen]);
 
   return (
-    <header className="relative top-0 left-0 right-0 z-50 bg-black border-b border-neutral-800">
+    <header className="relative top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-800">
       {/* Top Section: Logo, Search, Icons */}
-      <div className="px-4 md:px-8 py-2">
-        <div className="flex items-center justify-between gap-4 md:gap-8">
+      <div className="px-0 md:px-12 py-2">
+        <div className="flex items-center justify-between gap-2 md:gap-8">
           {/* Logo Section */}
           <Link href="/" onClick={closeMenus} className="flex items-center gap-2 flex-shrink-0 hover:opacity-80 transition">
-            <div className="relative w-20 h-20">
+            <div className="relative w-28 h-14">
               <Image
                 src="/woodenspace.png"
-                alt="D&L Logo"
+                alt="Wooden Space Logo"
                 width={200}
                 height={200}
-                className="w-full h-full"
+                priority
+                className="w-full h-full object-contain"
               />
             </div>
           </Link>
@@ -145,46 +147,44 @@ export default function Header() {
           {/* Search Bar - Hidden on Mobile */}
           <form
             onSubmit={handleSearch}
-            className="hidden md:flex flex-1 max-w-md items-center bg-neutral-900 rounded-full px-4 py-2.5 border border-neutral-700 hover:border-neutral-600 transition"
+            className="hidden md:flex flex-1 max-w-lg items-center bg-gray-800 rounded-lg px-4 py-2.5 border border-gray-700 hover:border-gray-600 transition"
           >
             <input
               type="text"
-              placeholder="Search furniture..."
+              placeholder="Search for furniture..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent outline-none text-sm w-full text-white placeholder-gray-500"
+              className="bg-transparent outline-none text-sm w-full text-white placeholder-gray-400 font-light"
             />
-            <button type="submit" className="ml-2 text-gray-400 hover:text-yellow-500 transition">
+            <button type="submit" className="ml-2 text-gray-400 hover:text-white transition">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
           </form>
 
           {/* Right Icons */}
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-1 md:gap-3">
             {/* Search Mobile */}
             <button
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden p-2 hover:bg-neutral-900 rounded-lg transition text-gray-300 hover:text-yellow-500"
+              className="md:hidden p-2.5 hover:bg-gray-800 rounded-lg transition text-gray-400 hover:text-white"
               title="Search"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
 
             {/* Wishlist */}
             <Link
               href="/wishlist"
-              className="relative p-2 hover:bg-neutral-900 rounded-lg transition text-red-500 hover:text-red-400"
+              className="relative p-2.5 hover:bg-gray-800 rounded-lg transition text-gray-400 hover:text-white"
               title="Wishlist"
             >
-              <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
+              <FiHeart className="w-5 h-5 md:w-6 md:h-6" strokeWidth={1.5} />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold text-center leading-none">
+                <span className="absolute -top-1 -right-1 bg-yellow-500 text-gray-900 text-xs w-4 h-4 rounded-full flex items-center justify-center font-medium text-center leading-none">
                   {wishlistCount}
                 </span>
               )}
@@ -193,14 +193,12 @@ export default function Header() {
             {/* Cart */}
             <Link
               href="/cart"
-              className="relative p-2 hover:bg-neutral-900 rounded-lg transition text-yellow-500 hover:text-yellow-400"
-              title="Cart"
+              className="relative p-2.5 hover:bg-gray-800 rounded-lg transition text-gray-400 hover:text-white"
+              title="Shopping Cart"
             >
-              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+              <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6" strokeWidth={1.5} />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-yellow-500 text-black text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold text-center leading-none">
+                <span className="absolute -top-1 -right-1 bg-yellow-500 text-gray-900 text-xs w-4 h-4 rounded-full flex items-center justify-center font-medium text-center leading-none">
                   {cartCount}
                 </span>
               )}
@@ -210,65 +208,62 @@ export default function Header() {
             <div className="relative" data-user-menu>
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="p-2 hover:bg-neutral-900 rounded-lg transition text-blue-400 hover:text-blue-300"
+                className="p-2.5 hover:bg-gray-800 rounded-lg transition text-gray-400 hover:text-white"
                 title="Account"
               >
-                <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" />
-                  <path d="M12 14c-6 0-8 3-8 3v6h16v-6s-2-3-8-3z" />
-                </svg>
+                <BiUser className="w-5 h-5 md:w-6 md:h-6" strokeWidth={1.5} />
               </button>
 
               {/* User Dropdown Menu */}
               {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-neutral-900 border border-neutral-700 rounded-lg shadow-2xl py-2 z-50" data-user-menu>
+                <div className="absolute right-0 md:right-0 mt-2 w-56 md:w-60 bg-gray-800 border border-gray-700 rounded-lg shadow-lg py-2 z-50 max-h-96 overflow-y-auto" data-user-menu>
                   {isLoggedIn ? (
                     <>
-                      <div className="px-4 py-3 border-b border-neutral-700 bg-neutral-800">
-                        <p className="text-xs text-gray-400">Welcome back!</p>
-                        <p className="text-sm font-bold text-yellow-500">{userData?.name}</p>
-                        <p className="text-xs text-gray-500">{userData?.email}</p>
+                      <div className="px-4 py-4 border-b border-gray-700 bg-gray-900">
+                        <p className="text-xs text-gray-400 font-medium">Welcome</p>
+                        <p className="text-sm font-semibold text-white mt-1">{userData?.name}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{userData?.email}</p>
                       </div>
                       <Link
                         href="/profile"
                         onClick={() => setUserMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:text-yellow-500 hover:bg-neutral-800 transition"
+                        className="block px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-gray-700 transition font-light"
                       >
-                        👤 My Profile
+                        My Profile
                       </Link>
                       <Link
                         href="/my-orders"
                         onClick={() => setUserMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:text-yellow-500 hover:bg-neutral-800 transition"
+                        className="block px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-gray-700 transition font-light"
                       >
-                        📦 My Orders
+                        My Orders
                       </Link>
                       <Link
                         href="/my-favorites"
                         onClick={() => setUserMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:text-red-500 hover:bg-neutral-800 transition"
+                        className="block px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-gray-700 transition font-light"
                       >
-                        ❤️ Wishlist
+                        Favorites
                       </Link>
                       <Link
                         href="/bookings"
                         onClick={() => setUserMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:text-blue-500 hover:bg-neutral-800 transition"
+                        className="block px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-gray-700 transition font-light"
                       >
-                        📋 My Bookings
+                        My Bookings
                       </Link>
                       <Link
                         href="/delivery-status"
                         onClick={() => setUserMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:text-green-500 hover:bg-neutral-800 transition"
+                        className="block px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-gray-700 transition font-light"
                       >
-                        🚚 Track Delivery
+                        Track Delivery
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-neutral-800 transition border-t border-neutral-700"
+                        className="w-full text-left px-4 py-3 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-gray-700 transition border-t border-gray-700"
                       >
-                        🚪 Logout
+                        🚪 Sign Out
                       </button>
                     </>
                   ) : (
@@ -276,14 +271,14 @@ export default function Header() {
                       <Link
                         href="/login"
                         onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-x-2 px-4 py-2.5 text-sm font-bold text-yellow-500 hover:bg-neutral-800 transition border-b border-neutral-700"
+                        className="flex items-center gap-x-2 px-4 py-3 text-sm font-semibold text-white hover:bg-gray-700 transition border-b border-gray-700"
                       >
                         <BiUser /> Login
                       </Link>
                       <Link
                         href="/register"
                         onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-x-2 px-4 py-2.5 text-sm font-bold text-blue-400 hover:bg-neutral-800 transition"
+                        className="flex items-center gap-x-2 px-4 py-3 text-sm font-semibold text-white hover:bg-gray-700 transition"
                       >
                         <BiPencil /> Register
                       </Link>
@@ -296,7 +291,7 @@ export default function Header() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 hover:bg-neutral-900 rounded-lg transition text-gray-300"
+              className="md:hidden p-2.5 hover:bg-gray-800 rounded-lg transition text-gray-400"
             >
               <svg
                 className="w-6 h-6"
@@ -307,7 +302,7 @@ export default function Header() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={1.5}
                   d={mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
                 />
               </svg>
@@ -318,22 +313,22 @@ export default function Header() {
 
       {/* Mobile Search Bar */}
       {mobileSearchOpen && (
-        <div className="md:hidden bg-neutral-900 border-t border-neutral-800 px-4 py-3">
+        <div className="md:hidden bg-gray-800 border-t border-gray-700 px-4 py-3">
           <form onSubmit={handleSearch} className="flex gap-2">
             <input
               type="text"
-              placeholder="Search furniture..."
+              placeholder="Search for furniture..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               autoFocus
-              className="flex-1 px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-gray-500 text-sm focus:outline-none focus:border-yellow-500 transition"
+              className="flex-1 px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 text-sm focus:outline-none focus:border-gray-500 transition font-light"
             />
             <button
               type="submit"
-              className="px-4 py-2.5 bg-yellow-600 text-black font-semibold rounded-lg hover:bg-yellow-700 transition"
+              className="px-4 py-2.5 bg-yellow-500 text-gray-900 font-medium rounded-lg hover:bg-yellow-600 transition text-sm"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
           </form>
@@ -341,15 +336,15 @@ export default function Header() {
       )}
 
       {/* Navigation Bar */}
-      <nav className="bg-orange-300">
+      <nav className="bg-gray-800 border-t border-gray-700">
         {/* Desktop Navigation */}
-        <div className="hidden md:flex justify-center px-8 py-2 overflow-x-auto scrollbar-hide">
+        <div className="hidden md:flex justify-center px-12 py-0 overflow-x-auto scrollbar-hide">
           {categories.map((cat) => (
             <Link
               key={cat.slug}
               href={cat.link || `/category/${cat.slug}`}
               onClick={closeMenus}
-              className="px-4 py-2 text-sm font-medium text-gray-900 hover:text-orange-600 border-b-2 border-transparent hover:border-orange-600 transition whitespace-nowrap"
+              className="px-5 py-4 text-sm font-light text-gray-300 hover:text-white border-b-2 border-transparent hover:border-yellow-500 transition whitespace-nowrap"
             >
               {cat.name}
             </Link>
@@ -358,13 +353,13 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-yellow-400 border-t border-neutral-800 p-4 space-y-2 max-h-96 overflow-y-auto">
+          <div className="md:hidden bg-gray-900 border-t border-gray-700 p-4 space-y-2 max-h-96 overflow-y-auto">
             {categories.map((cat) => (
               <Link
                 key={cat.slug}
                 href={cat.link || `/category/${cat.slug}`}
                 onClick={closeMenus}
-                className="block px-4 py-2.5 text-sm font-medium text-gray-300 hover:text-yellow-500 hover:bg-neutral-800 rounded transition"
+                className="block px-4 py-2.5 text-sm font-light text-gray-300 hover:text-white hover:bg-gray-800 rounded transition"
               >
                 {cat.name}
               </Link>
