@@ -73,45 +73,46 @@ export default function HeroBanner({ onCategorySelect }: HeroBannerProps) {
 
   return (
     <section 
-      className="w-full relative flex flex-col items-center justify-center overflow-hidden"
+      className="w-full h-screen relative flex flex-col items-center justify-center overflow-hidden"
       style={{
         backgroundImage: `url('/hero.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundAttachment: 'fixed',
+        minHeight: '100vh',
       }}
     >
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/30"></div>
       
       {/* Content */}
-      <div className="relative z-10 w-full px-4 py-8 md:py-10">
-        <div className="max-w-6xl mx-auto">
+      <div className="relative z-10 w-full h-full px-4 flex flex-col items-center justify-center">
+        <div className="max-w-6xl mx-auto w-full">
           {/* Header */}
           <div className="text-center mb-6 md:mb-8">
-            <h1 className="text-lg md:text-3xl font-bold text-white mb-2 drop-shadow-lg animate-slideInDown">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 drop-shadow-lg animate-slideInDown">
               Welcome to The Wooden Space
             </h1>
-            <p className="text-xs sm:text-sm md:text-base text-gray-50 mb-4 font-semibold drop-shadow-md animate-slideInUp" style={{ animationDelay: '0.2s' }}>
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-50 mb-6 font-semibold drop-shadow-md animate-slideInUp" style={{ animationDelay: '0.2s' }}>
               Premium Solid Wood Furniture for Your Lifestyle
             </p>
           </div>
 
           {/* Categories Slider */}
-          <div className="mb-6">
+          <div className="mb-4 md:mb-6">
             <div className="flex items-center justify-center gap-2 md:gap-3 flex-wrap">
               {loading ? (
-                <p className="text-white text-sm">Loading categories...</p>
+                <p className="text-white text-xs">Loading categories...</p>
               ) : categories.length > 0 ? (
                 categories.map((category, index) => (
                   <button
                     key={category}
                     onClick={() => handleCategoryClick(category)}
-                    className={`px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs sm:text-sm font-medium transition duration-300 whitespace-nowrap animate-fadeInScale ${
+                    className={`px-3 md:px-4 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium transition duration-300 whitespace-nowrap animate-fadeInScale shadow-md ${
                       selectedCategory === category
-                        ? 'bg-yellow-600 text-white shadow-lg scale-105'
-                        : 'bg-white/90 text-gray-900 hover:bg-white hover:shadow-md'
+                        ? 'bg-yellow-600 text-white scale-105'
+                        : 'bg-white/90 text-gray-900 hover:bg-white hover:shadow-lg'
                     }`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >
@@ -120,6 +121,17 @@ export default function HeroBanner({ onCategorySelect }: HeroBannerProps) {
                 ))
               ) : null}
             </div>
+          </div>
+
+          {/* Explore Button */}
+          <div className="flex justify-center">
+            <button
+              onClick={handleExploreClick}
+              className="px-6 py-2 md:py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold text-sm md:text-base rounded-lg shadow-lg transition duration-300 transform hover:scale-105 animate-bounce"
+              style={{ animationDelay: '0.6s' }}
+            >
+              Explore Now
+            </button>
           </div>
 
         </div>
